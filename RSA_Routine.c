@@ -3,8 +3,8 @@
 ** No implementation for hiding or masking of execution time / power consumption 
 */
 
+#include "arm_neon.h"
 #include <stdio.h>
-#include <stdint.h>
 
 int main() {
     uint32_t T = 0; 

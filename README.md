@@ -1,39 +1,17 @@
 # SENG440_Side_Channel_Attacks
 
 ## HOW TO USE WITH SSH
-Login on any lab machine in the ECE Undergraduate Lab using your netlink ID and password:
-$ ``ssh <netlinkid>@ugls.ece.uvic.ca``       
-
-Copy the file to the ssh server or git clone this repository to folder in lab machine 
-
-The compiler is available under "/opt/arm/4.3.2/bin/" directory. To compile RSA_Routine.c:
-
-$ ``arm-linux-gcc -static -o RSA_Routine.exe RSA_Routine.c``       
-
-The compiler supports SIMD (NEON) intrinsics. To use SIMD intrinsince, add NEON header to source code:
-
-$ ``#include "arm_neon.h"``       
-
-To compile with NEON intrinsics:
-
-$ ``/opt/arm/4.3.2/bin/arm-linux-gcc -mfloat-abi=softfp -mfpu=neon -static -O3 -S RSA_Routine.c``          
-
-To access the Real ARM Machine you first need to ssh into seng440.ece.uvic.ca using your unix/netlink password, and then telnet into the ARM Machine:
-
-$ ``ssh <netlinkid>@seng440.ece.uvic.ca``            
-$ ``telnet arm``       
-
-There are four users defined (user1, user2, user3, user4). The password for these four users on the ARM Machine is q6coHjd7P
-
-To execute the file.exe file, just type:
-
-$ chmod +x RSA_Routine.exe
-
-$ ``./RSA_Routine.exe``        
-
-To upload the executable file previously generated you can use lftp command:
-
-$ ``lftp user1@arm``          
+1. Open terminal, run `shh <netlinkid>@ugls.ece.uvic.ca`
+2. Run `make neon`: this will compile and create executable 
+3. Open another terminal, run ssh <netlinkid>@seng440.ece.uvic.ca
+4. Go to where make made the executable (where is this?)
+5. Run lftp user1@arm : sign in with password: q6coHjd7P and go to <our_folder>
+6. Run `put RSA_Routine.exe`
+7. Run `chmod +x RSA_Routine.exe`
+8. Exit lftp: i think just command `exit`
+9. Run `telnet arm` and sign in 
+10. Go to /<our_folder> again using `cd`
+11. Run `./RSA_Routine.exe`          
 
 ## RSA_Routine.c 
 This file implements the montgomery modular multiplication algorithm pseudocode in c code. 
