@@ -13,7 +13,9 @@ int main() {
     uint32_t M = 0b10111; // Example value for Y (5-bit integer)
     uint32_t m = 32; // Value for m for 32-bit integers 
 
-    for (int i = 0; i < m; i++) {
+    int i;
+ 
+    for (i = 0; i < m; i++) {
         uint32_t eta = (T & 0b00001) ^ ((X >> i) & 0b00001);
         uint64_t product = (uint64_t)((X >> i) & 0b00001) * (Y & 0b00001);
         uint32_t result = product % M;

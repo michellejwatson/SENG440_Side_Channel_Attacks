@@ -9,15 +9,15 @@
 ## HOW TO USE WITH SSH
 1. Open terminal, run `shh <netlinkid>@ugls.ece.uvic.ca`
 2. Run `make neon`: this will compile and create executable 
-3. Open another terminal, run ssh <netlinkid>@seng440.ece.uvic.ca
-4. Go to where make made the executable (where is this?)
-5. Run lftp user1@arm : sign in with password: q6coHjd7P and go to <our_folder>
+3. Open another terminal, run `ssh <netlinkid>@seng440.ece.uvic.ca`
+4. Go to location where you ran `make neon`
+5. Run lftp user1@arm : sign in with password: q6coHjd7P and go to rsa folder using `cd rsa`
 6. Run `put RSA_Routine.exe`
 7. Run `chmod +x RSA_Routine.exe`
-8. Exit lftp: i think just command `exit`
-9. Run `telnet arm` and sign in 
-10. Go to /<our_folder> again using `cd`
-11. Run `./RSA_Routine.exe`          
+8. Exit lftp: run `exit`
+9. Run `telnet arm` and sign in using user1 login info again 
+10. Go to our rsa folder again using `cd rsa`
+11. Run `./RSA_Routine.exe`     
 
 ## RSA_Routine.c 
 This file implements the montgomery modular multiplication algorithm pseudocode in c code. 
