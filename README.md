@@ -1,5 +1,11 @@
 # SENG440_Side_Channel_Attacks
 
+## HOW TO CLONE IN SSH SERVER 
+1. Generate SSH key pair: On your SSH server, use the `ssh-keygen` command to generate the keys. This will create a public key (id_rsa.pub) and a private key (id_rsa) in the ~/.ssh/ directory.
+2. Log in to your GitHub account and go to "Settings". Under "SSH and GPG keys", click on "New SSH key" or "Add SSH key". Provide a descriptive title for the key and paste the contents of your SSH public key (id_rsa.pub) into the designated field. Save the key
+3. Test ssh connection in ssh server with: `ssh -T git@github.com`
+4. Clone with: git@github.com:michellejwatson/SENG440_Side_Channel_Attacks.git 
+
 ## HOW TO USE WITH SSH
 1. Open terminal, run `shh <netlinkid>@ugls.ece.uvic.ca`
 2. Run `make neon`: this will compile and create executable 
