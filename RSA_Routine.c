@@ -6,13 +6,7 @@
 #include "arm_neon.h"
 #include <stdio.h>
 
-int main() {
-    uint32_t T = 0; 
-    uint32_t X = 0b10001; // Example value for X (5-bit integer)
-    uint32_t Y = 0b10110; // Example value for Y (5-bit integer)
-    uint32_t M = 0b10111; // Example value for Y (5-bit integer)
-    uint32_t m = 32; // Value for m for 32-bit integers 
-
+uint32_t RSA_Routine(uint32_t T, uint32_t X, uint32_t Y, uint32_t M, uint32_t m){
     int i;
  
     for (i = 0; i < m; i++) {
@@ -25,7 +19,17 @@ int main() {
         }
     }
     
-    uint32_t Z = T;
+    return T;
+}
+
+int main() {
+    uint32_t T = 0; 
+    uint32_t X = 0b10001; // Example value for X (5-bit integer)
+    uint32_t Y = 0b10110; // Example value for Y (5-bit integer)
+    uint32_t M = 0b10111; // Example value for Y (5-bit integer)
+    uint32_t m = 32; // Value for m for 32-bit integers 
+
+    uint32_t Z = RSA_Routine(T, X, Y, M, m);
     
     printf("Z = %u\n", Z);
     
