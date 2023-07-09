@@ -1,11 +1,8 @@
-compile:
-    /opt/arm/4.3.2/bin/arm-linux-gcc -static -o RSA_Routine.exe /tmp/RSA_Routine.c
-
 compile_neon:
-    /opt/arm/4.3.2/bin/arm-linux-gcc -mfloat-abi=softfp -mfpu=neon -static -O3 -S /tmp/RSA_Routine.c
+	/opt/arm/4.3.2/bin/arm-linux-gcc -mfloat-abi=softfp -mfpu=neon -static -O3 -S /tmp/RSA_functions.c
 
 exe_neon:
 	/opt/arm/4.3.2/bin/arm-linux-gcc -mfloat-abi=softfp -mfpu=neon RSA_Routine.s -o RSA_Routine.exe
 
 neon:
-	cp ./RSA_Routine.c /tmp/RSA_Routine.c && make compile_neon && make exe_neon
+	cp ./main.c /tmp/main.c && cp ./RSA_functions.c /tmp/RSA_functions.c && cp ./RSA_functions.h /tmp/RSA_functions.h && make compile_neon && make exe_neon
