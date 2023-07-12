@@ -17,7 +17,7 @@ int main() {
     uint64_t N = P * Q; // Modulus N
     uint64_t phi = (P - 1) * (Q - 1); // Euler's totient function value
     uint64_t E = 17; // Public exponent
-    uint64_t plaintext = 123;
+    uint64_t plaintext = 440;
     uint64_t m = 64; // temp, eventually need to be implemented for 256 bit 
     uint64_t D;
 
