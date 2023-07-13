@@ -6,13 +6,13 @@
 3. Test ssh connection in ssh server with: `ssh -T git@github.com`
 4. Clone with: `git@github.com:michellejwatson/SENG440_Side_Channel_Attacks.git` 
 
-## HOW TO USE WITH SSH (TO DO: this need to be changed with new code since goes beyond just RSA_Routine file)
+## HOW TO USE WITH SSH
 1. Open terminal, run `ssh <netlinkid>@ugls.ece.uvic.ca`
 2. Go to the SENG_440_Side_Channel_Attacks repository (wherever you cloned it to)
 2. Run `make neon`: this will compile and create executable 
 3. Open another terminal, run `ssh <netlinkid>@seng440.ece.uvic.ca`
 4. Go to location where you ran `make neon`
-5. Run `lftp user1@arm`, sign in with password: `q6coHjd7P` and go to rsa folder using `cd rsa`
+5. Run `lftp user1@arm`, sign in with password: `q6coHjd7P` and go to rsa folder using `cd rsa` or `mkdir rsa` if it doesn't exist
 6. Run `put RSA_Routine.exe`
 7. Run `chmod +x RSA_Routine.exe`
 8. Exit lftp: run `exit`

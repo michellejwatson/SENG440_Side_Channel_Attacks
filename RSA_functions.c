@@ -44,8 +44,9 @@ uint64_t rsa_decryption(uint64_t ciphertext, uint64_t d, uint64_t Y, uint64_t N,
 uint64_t montgomery_multiplication(uint64_t a, uint64_t b, uint64_t modulus) {
     uint64_t result = 0;
     uint64_t factor = (1ULL << 32) % modulus;
+    int i;
 
-    for (int i = 0; i < 32; i++) {
+    for (i = 0; i < 32; i++) {
         if (b % 2 == 1)
             result = (result + a) % modulus;
 

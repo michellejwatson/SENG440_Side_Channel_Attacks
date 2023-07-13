@@ -1,9 +1,11 @@
+assemble_neon:
+	/opt/arm/4.3.2/bin/arm-linux-gcc -mfloat-abi=softfp -mfpu=neon -O3 -S /tmp/RSA_functions.c -o RSA_functions.s && /opt/arm/4.3.2/bin/arm-linux-gcc -mfloat-abi=softfp -mfpu=neon -O3 -S /tmp/main.c -o main.s
+
 compile_neon:
-	/opt/arm/4.3.2/bin/arm-linux-gcc -mfloat-abi=softfp -mfpu=neon -static -O3 -S /tmp/RSA_functions.c /tmp/main.c
+	/opt/arm/4.3.2/bin/arm-linux-gcc -mfloat-abi=softfp -mfpu=neon -O3 -c RSA_functions.s -o RSA_functions.o && /opt/arm/4.3.2/bin/arm-linux-gcc -mfloat-abi=softfp -mfpu=neon -O3 -c main.s -o main.o
 
 exe_neon:
-	/opt/arm/4.3.2/bin/arm-linux-gcc -mfloat-abi=softfp -mfpu=neon /tmp/RSA_functions.o /tmp/main.o -o RSA_Routine.exe
+	/opt/arm/4.3.2/bin/arm-linux-gcc -mfloat-abi=softfp -mfpu=neon RSA_functions.o main.o -o RSA_Routine.exe
 
 neon:
-	cp ./main.c /tmp/main.c && cp ./RSA_functions.c /tmp/RSA_functions.c && 
-	cp ./RSA_functions.h /tmp/RSA_functions.h && make compile_neon && make exe_neon
+	cp ./main.c /tmp/main.c && cp ./RSA_functions.c /tmp/RSA_functions.c && cp ./RSA_functions.h /tmp/RSA_functions.h && make aseemble_neon && compile_neon && make exe_neon

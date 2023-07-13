@@ -47,7 +47,8 @@ int main() {
 
     // Compute R = (2^m) % N
     uint64_t R = 1;
-    for (int i = 0; i < m; i++) {
+    int i;
+    for (i = 0; i < m; i++) {
         R = (R << 1) % N;
     }
 
