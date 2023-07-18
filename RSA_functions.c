@@ -149,15 +149,15 @@ long long int montgomery_modular_exponentiation(long long int base, long long in
  *   - b: The second integer.
  * Returns: 1 if the integers are relatively prime, 0 otherwise.
  */
-int are_relatively_prime(long long int a, long long int b) {
-    long long int temp;
-    while (b != 0) {
-        temp = b;
-        b = a % b;
-        a = temp;
-    }
-    return a == 1;
-}
+// int are_relatively_prime(long long int a, long long int b) {
+//     long long int temp;
+//     while (b != 0) {
+//         temp = b;
+//         b = a % b;
+//         a = temp;
+//     }
+//     return a == 1;
+// }
 
 /** 
  * Finds the desired value of X in the formula D = (X(P-1)(Q-1) + 1) / E.
@@ -167,13 +167,13 @@ int are_relatively_prime(long long int a, long long int b) {
  *   - E: The public exponent.
  * Returns: The desired value of X.
  */
-long long int find_desired_x(long long int P, long long int Q, long long int E) {
-    long long int X = 1;
-    while ((X * (P - 1) * (Q - 1) + 1) % E != 0) {
-        X++;
-    }
-    return X;
-}
+// long long int find_desired_x(long long int P, long long int Q, long long int E) {
+//     long long int X = 1;
+//     while ((X * (P - 1) * (Q - 1) + 1) % E != 0) {
+//         X++;
+//     }
+//     return X;
+// }
 
 /** 
  * Computes the private exponent using D = (X(P-1)(Q-1) + 1) / E.
@@ -184,8 +184,8 @@ long long int find_desired_x(long long int P, long long int Q, long long int E) 
  *   - E: The public exponent.
  * Returns: The private exponent.
  */
-long long int compute_private_exponent(long long int X, long long int P, long long int Q, long long int E) {
-    long long int phi = (P - 1) * (Q - 1);
-    long long int D = ((X * phi) + 1) / E;
-    return D;
-}
+// long long int compute_private_exponent(long long int X, long long int P, long long int Q, long long int E) {
+//     long long int phi = (P - 1) * (Q - 1);
+//     long long int D = ((X * phi) + 1) / E;
+//     return D;
+// }

@@ -28,10 +28,10 @@ int main() {
     }
 
     // Check if E, P-1, and Q-1 are relatively prime
-    if (!are_relatively_prime(E, phi) || !are_relatively_prime(E, P - 1) || !are_relatively_prime(E, Q - 1)) {
-        printf("Invalid public exponent 'E'. It must be relatively prime to (P-1) and (Q-1).\n");
-        return -1;
-    }
+    // if (!are_relatively_prime(E, phi) || !are_relatively_prime(E, P - 1) || !are_relatively_prime(E, Q - 1)) {
+    //     printf("Invalid public exponent 'E'. It must be relatively prime to (P-1) and (Q-1).\n");
+    //     return -1;
+    // }
 
     // Check that plaintext is < PQ
     if (plaintext >= N) {
@@ -40,7 +40,13 @@ int main() {
     }
 
     // Calculate the private exponent d using the formula D = (X(P-1)(Q-1) + 1) / E
-    D = compute_private_exponent(find_desired_x(P, Q, E), P, Q, E);
+    long long int X = 1;
+    while ((X * (P - 1) * (Q - 1) + 1) % E != 0) {
+        X++;
+    }
+
+    long long int D = ((X * phi) + 1) / E;
+    //D = compute_private_exponent(find_desired_x(P, Q, E), P, Q, E);
 
     // Public Key: (E, PQ)
     // Private Key: (D, PQ)
