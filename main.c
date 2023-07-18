@@ -45,7 +45,7 @@ int main() {
         X++;
     }
 
-    long long int D = ((X * phi) + 1) / E;
+    D = ((X * phi) + 1) / E;
     //D = compute_private_exponent(find_desired_x(P, Q, E), P, Q, E);
 
     // Public Key: (E, PQ)
