@@ -15,9 +15,9 @@
  *   - m: The number of bits.
  * Returns: The encrypted ciphertext.
  */
-uint64_t rsa_encryption(uint64_t plaintext, uint64_t exponent, uint64_t Y, uint64_t N, uint64_t m){
-    return montgomery_modular_exponentiation(plaintext, exponent, N, Y, m);
-}
+// long long int rsa_encryption(long long int plaintext, long long int exponent, long long int Y, long long int N, long long int m){
+//     return montgomery_modular_exponentiation(plaintext, exponent, N, Y, m);
+// }
 
 /** 
  * Performs RSA decryption.
@@ -29,9 +29,9 @@ uint64_t rsa_encryption(uint64_t plaintext, uint64_t exponent, uint64_t Y, uint6
  *   - m: The number of bits.
  * Returns: The decrypted plaintext.
  */
-uint64_t rsa_decryption(uint64_t ciphertext, uint64_t d, uint64_t Y, uint64_t N, uint64_t m){
-    return montgomery_modular_exponentiation(ciphertext, d, N, Y, m);
-}
+// long long int rsa_decryption(long long int ciphertext, long long int d, long long int Y, long long int N, long long int m){
+//     return montgomery_modular_exponentiation(ciphertext, d, N, Y, m);
+// }
 
 /** 
  * Performs Montgomery modular multiplication.
@@ -41,9 +41,9 @@ uint64_t rsa_decryption(uint64_t ciphertext, uint64_t d, uint64_t Y, uint64_t N,
  *   - modulus: The modulus.
  * Returns: The result of the multiplication.
  */
-uint64_t montgomery_multiplication(uint64_t a, uint64_t b, uint64_t modulus) {
-    uint64_t result = 0;
-    uint64_t factor = (1ULL << 32) % modulus;
+long long int montgomery_multiplication(long long int a, long long int b, long long int modulus) {
+    long long int result = 0;
+    long long int factor = (1ULL << 32) % modulus;
     int i;
 
     for (i = 0; i < 32; i++) {
@@ -67,18 +67,18 @@ uint64_t montgomery_multiplication(uint64_t a, uint64_t b, uint64_t modulus) {
  *   - modulus: The modulus.
  * Returns: The modular inverse of the number, or 0 if it does not exist.
  */
-uint64_t compute_modular_inverse(uint64_t number, uint64_t modulus) {
+long long int compute_modular_inverse(long long int number, long long int modulus) {
     int64_t t = 0, new_t = 1;
-    uint64_t r = modulus, new_r = number;
+    long long int r = modulus, new_r = number;
 
     while (new_r != 0) {
-        uint64_t quotient = r / new_r;
+        long long int quotient = r / new_r;
 
-        uint64_t temp_t = new_t;
+        long long int temp_t = new_t;
         new_t = t - quotient * new_t;
         t = temp_t;
 
-        uint64_t temp_r = new_r;
+        long long int temp_r = new_r;
         new_r = r - quotient * new_r;
         r = temp_r;
     }
@@ -104,13 +104,13 @@ uint64_t compute_modular_inverse(uint64_t number, uint64_t modulus) {
  *   - m: The number of bits.
  * Returns: The reduced result after Montgomery modular reduction.
  */
-uint64_t montgomery_modular_reduction(uint64_t result, uint64_t modulus, uint64_t Y, uint64_t m) {
-    uint64_t factor = (1ULL << m) % modulus;
-    uint64_t R_inverse = compute_modular_inverse(factor, modulus); // Compute the modular inverse of the Montgomery factor R
+long long int montgomery_modular_reduction(long long int result, long long int modulus, long long int Y, long long int m) {
+    long long int factor = (1ULL << m) % modulus;
+    long long int R_inverse = compute_modular_inverse(factor, modulus); // Compute the modular inverse of the Montgomery factor R
 
-    uint64_t montgomery_result = montgomery_multiplication(result, 1, modulus); // Convert the result to Montgomery form
+    long long int montgomery_result = montgomery_multiplication(result, 1, modulus); // Convert the result to Montgomery form
 
-    uint64_t reduced_result = montgomery_multiplication(montgomery_result, R_inverse, modulus); // Perform the Montgomery reduction
+    long long int reduced_result = montgomery_multiplication(montgomery_result, R_inverse, modulus); // Perform the Montgomery reduction
 
     return reduced_result;
 }
@@ -125,10 +125,10 @@ uint64_t montgomery_modular_reduction(uint64_t result, uint64_t modulus, uint64_
  *   - m: The number of bits.
  * Returns: The result of the modular exponentiation.
  */
-uint64_t montgomery_modular_exponentiation(uint64_t base, uint64_t exponent, uint64_t modulus, uint64_t Y, uint64_t m) {
-    uint64_t result = 1;
-    uint64_t R = (1ULL << m) % modulus;
-    uint64_t baseMont = montgomery_multiplication(base, R, modulus);  // R is the Montgomery factor
+long long int montgomery_modular_exponentiation(long long int base, long long int exponent, long long int modulus, long long int Y, long long int m) {
+    long long int result = 1;
+    long long int R = (1ULL << m) % modulus;
+    long long int baseMont = montgomery_multiplication(base, R, modulus);  // R is the Montgomery factor
 
     while (exponent > 0) {
         if (exponent & 1) {
@@ -149,8 +149,8 @@ uint64_t montgomery_modular_exponentiation(uint64_t base, uint64_t exponent, uin
  *   - b: The second integer.
  * Returns: 1 if the integers are relatively prime, 0 otherwise.
  */
-int are_relatively_prime(uint64_t a, uint64_t b) {
-    uint64_t temp;
+int are_relatively_prime(long long int a, long long int b) {
+    long long int temp;
     while (b != 0) {
         temp = b;
         b = a % b;
@@ -167,8 +167,8 @@ int are_relatively_prime(uint64_t a, uint64_t b) {
  *   - E: The public exponent.
  * Returns: The desired value of X.
  */
-uint64_t find_desired_x(uint64_t P, uint64_t Q, uint64_t E) {
-    uint64_t X = 1;
+long long int find_desired_x(long long int P, long long int Q, long long int E) {
+    long long int X = 1;
     while ((X * (P - 1) * (Q - 1) + 1) % E != 0) {
         X++;
     }
@@ -184,8 +184,8 @@ uint64_t find_desired_x(uint64_t P, uint64_t Q, uint64_t E) {
  *   - E: The public exponent.
  * Returns: The private exponent.
  */
-uint64_t compute_private_exponent(uint64_t X, uint64_t P, uint64_t Q, uint64_t E) {
-    uint64_t phi = (P - 1) * (Q - 1);
-    uint64_t D = ((X * phi) + 1) / E;
+long long int compute_private_exponent(long long int X, long long int P, long long int Q, long long int E) {
+    long long int phi = (P - 1) * (Q - 1);
+    long long int D = ((X * phi) + 1) / E;
     return D;
 }

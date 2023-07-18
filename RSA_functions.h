@@ -5,30 +5,30 @@
 #include <stdint.h>
 
 /** Performs RSA encryption **/
-uint64_t rsa_encryption(uint64_t plaintext, uint64_t exponent, uint64_t Y, uint64_t N, uint64_t m);
+//long long int rsa_encryption(long long int plaintext, long long int exponent, long long int Y, long long int N, long long int m);
 
 /** Performs RSA decryption **/
-uint64_t rsa_decryption(uint64_t ciphertext, uint64_t d, uint64_t Y, uint64_t N, uint64_t m);
+//long long int rsa_decryption(long long int ciphertext, long long int d, long long int Y, long long int N, long long int m);
 
 /** Performs Montgomery modular multiplication **/
-uint64_t montgomery_multiplication(uint64_t a, uint64_t b, uint64_t modulus);
+long long int montgomery_multiplication(long long int a, long long int b, long long int modulus);
 
 /** Computes the modular inverse of a number **/
-uint64_t compute_modular_inverse(uint64_t number, uint64_t modulus);
+long long int compute_modular_inverse(long long int number, long long int modulus);
 
 /** Performs Montgomery modular reduction **/
-uint64_t montgomery_modular_reduction(uint64_t result, uint64_t modulus, uint64_t Y, uint64_t m);
+long long int montgomery_modular_reduction(long long int result, long long int modulus, long long int Y, long long int m);
 
 /** Performs Montgomery modular exponentiatio **/
-uint64_t montgomery_modular_exponentiation(uint64_t base, uint64_t exponent, uint64_t modulus, uint64_t Y, uint64_t m);
+long long int montgomery_modular_exponentiation(long long int base, long long int exponent, long long int modulus, long long int Y, long long int m);
 
 /** Checks if numbers are relatively prime **/
-int are_relatively_prime(uint64_t a, uint64_t b);
+int are_relatively_prime(long long int a, long long int b);
 
 /** Finds desired value of X in the formula D = (X(P-1)(Q-1) + 1) / E **/
-uint64_t find_desired_x(uint64_t P, uint64_t Q, uint64_t E);
+long long int find_desired_x(long long int P, long long int Q, long long int E);
 
 /** Computes private exponent using D = (X(P-1)(Q-1) + 1) / E **/
-uint64_t compute_private_exponent(uint64_t X, uint64_t P, uint64_t Q, uint64_t E);
+long long int compute_private_exponent(long long int X, long long int P, long long int Q, long long int E);
 
 #endif

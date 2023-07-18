@@ -12,14 +12,14 @@
 
 int main() {
     /** initial test **/
-    uint64_t P = 61; // Prime Number P
-    uint64_t Q = 53; // Prime Number Q
-    uint64_t N = P * Q; // Modulus N
-    uint64_t phi = (P - 1) * (Q - 1); // Euler's totient function value
-    uint64_t E = 17; // Public exponent
-    uint64_t plaintext = 440;
-    uint64_t m = 64; // 64 bits
-    uint64_t D;
+    long long int P = 61; // Prime Number P
+    long long int Q = 53; // Prime Number Q
+    long long int N = P * Q; // Modulus N
+    long long int phi = (P - 1) * (Q - 1); // Euler's totient function value
+    long long int E = 17; // Public exponent
+    long long int plaintext = 440;
+    long long int m = 64; // 64 bits
+    long long int D;
 
     // Check 1 < E < PQ
     if (E <= 1 || E >= N) {
@@ -46,19 +46,20 @@ int main() {
     // Private Key: (D, PQ)
 
     // Compute R = (2^m) % N
-    uint64_t R = 1;
+    long long int R = 1;
     int i;
     for (i = 0; i < m; i++) {
         R = (R << 1) % N;
     }
 
     // Compute Y = (R^2) % N
-    uint64_t Y = (R * R) % N;
+    long long int Y = (R * R) % N;
 
     // Perform RSA encryption
     clock_t start_encrypt = clock();
 
-    uint64_t ciphertext = rsa_encryption(plaintext, E, Y, N, m);
+    //long long int ciphertext = rsa_encryption(plaintext, E, Y, N, m);
+    long long int ciphertext = montgomery_modular_exponentiation(plaintext, E, N, Y, m);
 
     clock_t end_encrypt = clock();
     double total_time_encrypt = (double)(end_encrypt - start_encrypt) / CLOCKS_PER_SEC;
@@ -70,7 +71,8 @@ int main() {
     // Perform RSA decryption
     clock_t start_decrypt = clock();
 
-    uint64_t decrypted = rsa_decryption(ciphertext, D, (R * R) % N, N, m);
+    //long long int decrypted = rsa_decryption(ciphertext, D, (R * R) % N, N, m);
+    long long int decrypted = montgomery_modular_exponentiation(ciphertext, D, N, (R * R) % N, m);
 
     clock_t end_decrypt = clock();
     double total_time_decrypt = (double)(end_decrypt - start_decrypt) / CLOCKS_PER_SEC;
