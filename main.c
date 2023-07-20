@@ -18,8 +18,10 @@
  */
 int64_t montgomery_multiplication(int64_t a, int64_t b, int64_t modulus) {
     int64_t result = 0;
-    int64_t factor = (1ULL << 32) % modulus;
+    int64_t factor = (1LL << 32) % modulus;
     int i;
+
+    printf("in montgomery multiplication\n");
 
     for (i = 0; i < 32; i++) {
         if (b % 2 == 1)
@@ -45,6 +47,8 @@ int64_t montgomery_multiplication(int64_t a, int64_t b, int64_t modulus) {
 int64_t compute_modular_inverse(int64_t number, int64_t modulus) {
     int64_t t = 0, new_t = 1;
     int64_t r = modulus, new_r = number;
+
+    printf("in compute modular inverse\n");
 
     while (new_r != 0) {
         int64_t quotient = r / new_r;
@@ -81,6 +85,7 @@ int64_t compute_modular_inverse(int64_t number, int64_t modulus) {
  */
 int64_t montgomery_modular_reduction(int64_t result, int64_t modulus, int64_t Y, int64_t m) {
     int64_t factor = (1ULL << m) % modulus;
+    printf("in montgomery modular reduction\n");
     int64_t R_inverse = compute_modular_inverse(factor, modulus); // Compute the modular inverse of the Montgomery factor R
 
     int64_t montgomery_result = montgomery_multiplication(result, 1, modulus); // Convert the result to Montgomery form
@@ -103,6 +108,7 @@ int64_t montgomery_modular_reduction(int64_t result, int64_t modulus, int64_t Y,
 int64_t montgomery_modular_exponentiation(int64_t base, int64_t exponent, int64_t modulus, int64_t Y, int64_t m) {
     int64_t result = 1;
     int64_t R = (1ULL << m) % modulus;
+    printf("in modular exponentiation\n");
     int64_t baseMont = montgomery_multiplication(base, R, modulus);  // R is the Montgomery factor
 
     while (exponent > 0) {
@@ -127,6 +133,9 @@ int main() {
     int64_t plaintext = 440;
     int64_t m = 64; // 64 bits
     int64_t D;
+
+    printf("in main\n");
+    printf("value of P: %11d\n", P);
 
     // Check 1 < E < PQ
     if (E <= 1 || E >= N) {
@@ -170,7 +179,7 @@ int main() {
     double total_time_encrypt = (double)(end_encrypt - start_encrypt) / CLOCKS_PER_SEC;
 
     printf("********** RSA Encryption **********\n");
-    printf("RSA Encryption Ciphertext: %llu\n", ciphertext);
+    printf("RSA Encryption Ciphertext: %lld\n", ciphertext);
     printf("Time to execute encrypt: %.7f\n", total_time_encrypt);
 
     // Perform RSA decryption
@@ -182,7 +191,7 @@ int main() {
     double total_time_decrypt = (double)(end_decrypt - start_decrypt) / CLOCKS_PER_SEC;
 
     printf("********** RSA Decryption **********\n");
-    printf("Decrypted: %llu\n", decrypted);
+    printf("Decrypted: %lld\n", decrypted);
     printf("Time to execute decrypt: %.7f\n", total_time_decrypt);
 
     return 0;
