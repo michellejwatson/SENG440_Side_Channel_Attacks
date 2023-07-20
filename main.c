@@ -16,9 +16,9 @@
  *   - modulus: The modulus.
  * Returns: The result of the multiplication.
  */
-uint64_t montgomery_multiplication(uint64_t a, uint64_t b, uint64_t modulus) {
-    uint64_t result = 0;
-    uint64_t factor = (1LL << 32) % modulus;
+uint32_t montgomery_multiplication(uint32_t a, uint32_t b, uint32_t modulus) {
+    uint32_t result = 0;
+    uint32_t factor = (1LL << 32) % modulus;
     int i;
 
     for (i = 0; i < 32; i++) {
@@ -42,18 +42,18 @@ uint64_t montgomery_multiplication(uint64_t a, uint64_t b, uint64_t modulus) {
  *   - modulus: The modulus.
  * Returns: The modular inverse of the number, or 0 if it does not exist.
  */
-/*uint64_t compute_modular_inverse(uint64_t number, uint64_t modulus) {
-    uint64_t t = 0, new_t = 1;
-    uint64_t r = modulus, new_r = number;
+/*uint32_t compute_modular_inverse(uint32_t number, uint32_t modulus) {
+    uint32_t t = 0, new_t = 1;
+    uint32_t r = modulus, new_r = number;
 
     while (new_r != 0) {
-        uint64_t quotient = r / new_r;
+        uint32_t quotient = r / new_r;
 
-        uint64_t temp_t = new_t;
+        uint32_t temp_t = new_t;
         new_t = t - quotient * new_t;
         t = temp_t;
 
-        uint64_t temp_r = new_r;
+        uint32_t temp_r = new_r;
         new_r = r - quotient * new_r;
         r = temp_r;
     }
@@ -79,13 +79,13 @@ uint64_t montgomery_multiplication(uint64_t a, uint64_t b, uint64_t modulus) {
  *   - m: The number of bits.
  * Returns: The reduced result after Montgomery modular reduction.
  */
-uint64_t montgomery_modular_reduction(uint64_t result, uint64_t modulus, uint64_t Y, uint64_t m) {
-    uint64_t factor = (1ULL << m) % modulus;
-    //uint64_t R_inverse = compute_modular_inverse(factor, modulus); // Compute the modular inverse of the Montgomery factor R
-    uint64_t R_inverse = 1;
-    uint64_t montgomery_result = montgomery_multiplication(result, 1, modulus); // Convert the result to Montgomery form
+uint32_t montgomery_modular_reduction(uint32_t result, uint32_t modulus, uint32_t Y, uint32_t m) {
+    uint32_t factor = (1ULL << m) % modulus;
+    //uint32_t R_inverse = compute_modular_inverse(factor, modulus); // Compute the modular inverse of the Montgomery factor R
+    uint32_t R_inverse = 1;
+    uint32_t montgomery_result = montgomery_multiplication(result, 1, modulus); // Convert the result to Montgomery form
 
-    uint64_t reduced_result = montgomery_multiplication(montgomery_result, R_inverse, modulus); // Perform the Montgomery reduction
+    uint32_t reduced_result = montgomery_multiplication(montgomery_result, R_inverse, modulus); // Perform the Montgomery reduction
 
     return reduced_result;
 }
@@ -100,11 +100,11 @@ uint64_t montgomery_modular_reduction(uint64_t result, uint64_t modulus, uint64_
  *   - m: The number of bits.
  * Returns: The result of the modular exponentiation.
  */
-uint64_t montgomery_modular_exponentiation(uint64_t base, uint64_t exponent, uint64_t modulus, uint64_t Y, uint64_t m) {
-    uint64_t result = 1;
-    //uint64_t R = (1ULL << m) % modulus;
-    uint64_t R = 1;
-    uint64_t baseMont = montgomery_multiplication(base, R, modulus);  // R is the Montgomery factor
+uint32_t montgomery_modular_exponentiation(uint32_t base, uint32_t exponent, uint32_t modulus, uint32_t Y, uint32_t m) {
+    uint32_t result = 1;
+    //uint32_t R = (1ULL << m) % modulus;
+    uint32_t R = 1;
+    uint32_t baseMont = montgomery_multiplication(base, R, modulus);  // R is the Montgomery factor
 
     while (exponent > 0) {
         if (exponent & 1) {
@@ -120,14 +120,14 @@ uint64_t montgomery_modular_exponentiation(uint64_t base, uint64_t exponent, uin
 
 int main() {
     /** initial test **/
-    uint64_t P = 61; // Prime Number P
-    uint64_t Q = 53; // Prime Number Q
-    uint64_t N = P * Q; // Modulus N
-    uint64_t phi = (P - 1) * (Q - 1); // Euler's totient function value
-    uint64_t E = 17; // Public exponent
-    uint64_t plaintext = 440;
-    uint64_t m = 64; // 64 bits
-    uint64_t D;
+    uint32_t P = 61; // Prime Number P
+    uint32_t Q = 53; // Prime Number Q
+    uint32_t N = P * Q; // Modulus N
+    uint32_t phi = (P - 1) * (Q - 1); // Euler's totient function value
+    uint32_t E = 17; // Public exponent
+    uint32_t plaintext = 440;
+    uint32_t m = 64; // 64 bits
+    uint32_t D;
 
     // Check 1 < E < PQ
     if (E <= 1 || E >= N) {
@@ -142,7 +142,7 @@ int main() {
     }
 
     // Calculate the private exponent d using the formula D = (X(P-1)(Q-1) + 1) / E
-    uint64_t X = 1;
+    uint32_t X = 1;
     while ((X * (P - 1) * (Q - 1) + 1) % E != 0) {
         X++;
     }
@@ -153,19 +153,19 @@ int main() {
     // Private Key: (D, PQ)
 
     // Compute R = (2^m) % N
-    uint64_t R = 1;
+    uint32_t R = 1;
     int i;
     for (i = 0; i < m; i++) {
         R = (R << 1) % N;
     }
 
     // Compute Y = (R^2) % N
-    uint64_t Y = (R * R) % N;
+    uint32_t Y = (R * R) % N;
 
     // Perform RSA encryption
     clock_t start_encrypt = clock();
 
-    uint64_t ciphertext = montgomery_modular_exponentiation(plaintext, E, N, Y, m);
+    uint32_t ciphertext = montgomery_modular_exponentiation(plaintext, E, N, Y, m);
 
     clock_t end_encrypt = clock();
     double total_time_encrypt = (double)(end_encrypt - start_encrypt) / CLOCKS_PER_SEC;
@@ -177,7 +177,7 @@ int main() {
     // Perform RSA decryption
     clock_t start_decrypt = clock();
 
-    uint64_t decrypted = montgomery_modular_exponentiation(ciphertext, D, N, Y, m);
+    uint32_t decrypted = montgomery_modular_exponentiation(ciphertext, D, N, Y, m);
 
     clock_t end_decrypt = clock();
     double total_time_decrypt = (double)(end_decrypt - start_decrypt) / CLOCKS_PER_SEC;
