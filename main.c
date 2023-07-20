@@ -81,8 +81,9 @@ uint32_t compute_modular_inverse(uint32_t number, uint32_t modulus) {
  */
 uint32_t montgomery_modular_reduction(uint32_t result, uint32_t modulus, uint32_t Y, uint32_t m) {
     uint32_t factor = (1ULL << m) % modulus;
-    uint32_t R_inverse = compute_modular_inverse(factor, modulus); // Compute the modular inverse of the Montgomery factor R
-
+    //uint32_t R_inverse = compute_modular_inverse(factor, modulus); // Compute the modular inverse of the Montgomery factor R
+    //printf("value of R_inverse: %d\n", R_inverse);
+    uint32_t R_inverse = 1;
     uint32_t montgomery_result = montgomery_multiplication(result, 1, modulus); // Convert the result to Montgomery form
 
     uint32_t reduced_result = montgomery_multiplication(montgomery_result, R_inverse, modulus); // Perform the Montgomery reduction
@@ -150,6 +151,7 @@ int main() {
     }
 
     D = ((X * phi) + 1) / E;
+    printf("value of D: %d\n", D);
 
     // Public Key: (E, PQ)
     // Private Key: (D, PQ)
@@ -160,9 +162,11 @@ int main() {
     for (i = 0; i < m; i++) {
         R = (R << 1) % N;
     }
+    printf("value of R: %d\n", R);
 
     // Compute Y = (R^2) % N
     uint32_t Y = (R * R) % N;
+    printf("value of Y: %d\n", R);
 
     // Perform RSA encryption
     clock_t start_encrypt = clock();
