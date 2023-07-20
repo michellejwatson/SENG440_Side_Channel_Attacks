@@ -9,3 +9,6 @@ exe_neon:
 
 neon:
 	cp ./main.c /tmp/main.c && cp ./RSA_functions.c /tmp/RSA_functions.c && cp ./RSA_functions.h /tmp/RSA_functions.h && make assemble_neon && make exe_neon
+
+exe: 
+	cp ./main.c /tmp/main.c && arm-linux-gcc -static -o RSA_Routine.exe /tmp/main.c 

@@ -42,7 +42,7 @@ uint32_t montgomery_multiplication(uint32_t a, uint32_t b, uint32_t modulus) {
  *   - modulus: The modulus.
  * Returns: The modular inverse of the number, or 0 if it does not exist.
  */
-uint32_t compute_modular_inverse(uint32_t number, uint32_t modulus) {
+/*uint32_t compute_modular_inverse(uint32_t number, uint32_t modulus) {
     uint32_t t = 0, new_t = 1;
     uint32_t r = modulus, new_r = number;
 
@@ -68,7 +68,7 @@ uint32_t compute_modular_inverse(uint32_t number, uint32_t modulus) {
     }
 
     return t;
-}
+}*/
 
 /** 
  * Performs Montgomery modular reduction.
@@ -82,7 +82,6 @@ uint32_t compute_modular_inverse(uint32_t number, uint32_t modulus) {
 uint32_t montgomery_modular_reduction(uint32_t result, uint32_t modulus, uint32_t Y, uint32_t m) {
     uint32_t factor = (1ULL << m) % modulus;
     //uint32_t R_inverse = compute_modular_inverse(factor, modulus); // Compute the modular inverse of the Montgomery factor R
-    //printf("value of R_inverse: %d\n", R_inverse);
     uint32_t R_inverse = 1;
     uint32_t montgomery_result = montgomery_multiplication(result, 1, modulus); // Convert the result to Montgomery form
 
@@ -103,7 +102,8 @@ uint32_t montgomery_modular_reduction(uint32_t result, uint32_t modulus, uint32_
  */
 uint32_t montgomery_modular_exponentiation(uint32_t base, uint32_t exponent, uint32_t modulus, uint32_t Y, uint32_t m) {
     uint32_t result = 1;
-    uint32_t R = (1ULL << m) % modulus;
+    //uint32_t R = (1ULL << m) % modulus;
+    uint32_t R = 1;
     uint32_t baseMont = montgomery_multiplication(base, R, modulus);  // R is the Montgomery factor
 
     while (exponent > 0) {
@@ -129,9 +129,6 @@ int main() {
     uint32_t m = 64; // 64 bits
     uint32_t D;
 
-    printf("in main\n");
-    printf("value of P: %11d\n", P);
-
     // Check 1 < E < PQ
     if (E <= 1 || E >= N) {
         printf("Invalid public exponent 'E'. It must satisfy 1 < E < PQ.\n");
@@ -151,7 +148,6 @@ int main() {
     }
 
     D = ((X * phi) + 1) / E;
-    printf("value of D: %d\n", D);
 
     // Public Key: (E, PQ)
     // Private Key: (D, PQ)
@@ -162,11 +158,9 @@ int main() {
     for (i = 0; i < m; i++) {
         R = (R << 1) % N;
     }
-    printf("value of R: %d\n", R);
 
     // Compute Y = (R^2) % N
     uint32_t Y = (R * R) % N;
-    printf("value of Y: %d\n", R);
 
     // Perform RSA encryption
     clock_t start_encrypt = clock();
@@ -177,7 +171,7 @@ int main() {
     double total_time_encrypt = (double)(end_encrypt - start_encrypt) / CLOCKS_PER_SEC;
 
     printf("********** RSA Encryption **********\n");
-    printf("RSA Encryption Ciphertext: %u\n", ciphertext);
+    printf("RSA Encryption Ciphertext: %d\n", ciphertext);
     printf("Time to execute encrypt: %.7f\n", total_time_encrypt);
 
     // Perform RSA decryption
