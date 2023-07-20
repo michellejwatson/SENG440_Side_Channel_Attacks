@@ -6,34 +6,6 @@
 
 
 /** 
- * Performs RSA encryption.
- * Parameters:
- *   - plaintext: The plaintext message to be encrypted.
- *   - exponent: The public exponent.
- *   - Y: The Montgomery factor.
- *   - N: The modulus.
- *   - m: The number of bits.
- * Returns: The encrypted ciphertext.
- */
-// long long int rsa_encryption(long long int plaintext, long long int exponent, long long int Y, long long int N, long long int m){
-//     return montgomery_modular_exponentiation(plaintext, exponent, N, Y, m);
-// }
-
-/** 
- * Performs RSA decryption.
- * Parameters:
- *   - ciphertext: The ciphertext to be decrypted.
- *   - d: The private exponent.
- *   - Y: The Montgomery factor.
- *   - N: The modulus.
- *   - m: The number of bits.
- * Returns: The decrypted plaintext.
- */
-// long long int rsa_decryption(long long int ciphertext, long long int d, long long int Y, long long int N, long long int m){
-//     return montgomery_modular_exponentiation(ciphertext, d, N, Y, m);
-// }
-
-/** 
  * Performs Montgomery modular multiplication.
  * Parameters:
  *   - a: The first operand.
@@ -141,51 +113,3 @@ long long int montgomery_modular_exponentiation(long long int base, long long in
 
     return montgomery_modular_reduction(result, modulus, Y, m);  // Montgomery reduction after exponentiation
 }
-
-/** 
- * Checks if two integers are relatively prime.
- * Parameters:
- *   - a: The first integer.
- *   - b: The second integer.
- * Returns: 1 if the integers are relatively prime, 0 otherwise.
- */
-// int are_relatively_prime(long long int a, long long int b) {
-//     long long int temp;
-//     while (b != 0) {
-//         temp = b;
-//         b = a % b;
-//         a = temp;
-//     }
-//     return a == 1;
-// }
-
-/** 
- * Finds the desired value of X in the formula D = (X(P-1)(Q-1) + 1) / E.
- * Parameters:
- *   - P: The prime number P.
- *   - Q: The prime number Q.
- *   - E: The public exponent.
- * Returns: The desired value of X.
- */
-// long long int find_desired_x(long long int P, long long int Q, long long int E) {
-//     long long int X = 1;
-//     while ((X * (P - 1) * (Q - 1) + 1) % E != 0) {
-//         X++;
-//     }
-//     return X;
-// }
-
-/** 
- * Computes the private exponent using D = (X(P-1)(Q-1) + 1) / E.
- * Parameters:
- *   - X: The desired value X.
- *   - P: The prime number P.
- *   - Q: The prime number Q.
- *   - E: The public exponent.
- * Returns: The private exponent.
- */
-// long long int compute_private_exponent(long long int X, long long int P, long long int Q, long long int E) {
-//     long long int phi = (P - 1) * (Q - 1);
-//     long long int D = ((X * phi) + 1) / E;
-//     return D;
-// }
