@@ -1,5 +1,5 @@
 assemble_neon:
-	/opt/arm/4.3.2/bin/arm-linux-gcc -mfloat-abi=softfp -mfpu=neon -O3 -S /tmp/RSA_functions.c -o RSA_functions.s && /opt/arm/4.3.2/bin/arm-linux-gcc -mfloat-abi=softfp -mfpu=neon -O3 -S /tmp/main.c -o main.s
+	/opt/arm/4.3.2/bin/arm-linux-gcc -mfloat-abi=softfp -mfpu=neon -O3 -S /tmp/RSA_functions.c && /opt/arm/4.3.2/bin/arm-linux-gcc -mfloat-abi=softfp -mfpu=neon -O3 -S /tmp/main.c
 
 compile_neon:
 	/opt/arm/4.3.2/bin/arm-linux-gcc -mfloat-abi=softfp -mfpu=neon -O3 -c RSA_functions.s -o RSA_functions.o && /opt/arm/4.3.2/bin/arm-linux-gcc -mfloat-abi=softfp -mfpu=neon -O3 -c main.s -o main.o
