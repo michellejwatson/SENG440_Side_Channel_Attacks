@@ -36,41 +36,6 @@ uint32_t montgomery_multiplication(uint32_t a, uint32_t b, uint32_t modulus) {
 }
 
 /** 
- * Computes the modular inverse of a number.
- * Parameters:
- *   - number: The number for which the inverse is computed.
- *   - modulus: The modulus.
- * Returns: The modular inverse of the number, or 0 if it does not exist.
- */
-/*uint32_t compute_modular_inverse(uint32_t number, uint32_t modulus) {
-    uint32_t t = 0, new_t = 1;
-    uint32_t r = modulus, new_r = number;
-
-    while (new_r != 0) {
-        uint32_t quotient = r / new_r;
-
-        uint32_t temp_t = new_t;
-        new_t = t - quotient * new_t;
-        t = temp_t;
-
-        uint32_t temp_r = new_r;
-        new_r = r - quotient * new_r;
-        r = temp_r;
-    }
-
-    if (r > 1) {
-        // The number is not invertible (not relatively prime to modulus)
-        return 0;
-    }
-
-    if (t < 0) {
-        t += modulus;
-    }
-
-    return t;
-}*/
-
-/** 
  * Performs Montgomery modular reduction.
  * Parameters:
  *   - result: The result of the modular exponentiation.

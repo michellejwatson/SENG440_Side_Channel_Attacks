@@ -4,7 +4,6 @@
 
 #include "RSA_functions.h"
 
-
 /** 
  * Performs Montgomery modular multiplication.
  * Parameters:
@@ -13,9 +12,9 @@
  *   - modulus: The modulus.
  * Returns: The result of the multiplication.
  */
-long long int montgomery_multiplication(long long int a, long long int b, long long int modulus) {
-    long long int result = 0;
-    long long int factor = (1ULL << 32) % modulus;
+uint32_t montgomery_multiplication(uint32_t a, uint32_t b, uint32_t modulus) {
+    uint32_t result = 0;
+    uint32_t factor = (1LL << 32) % modulus;
     int i;
 
     for (i = 0; i < 32; i++) {
@@ -33,41 +32,6 @@ long long int montgomery_multiplication(long long int a, long long int b, long l
 }
 
 /** 
- * Computes the modular inverse of a number.
- * Parameters:
- *   - number: The number for which the inverse is computed.
- *   - modulus: The modulus.
- * Returns: The modular inverse of the number, or 0 if it does not exist.
- */
-long long int compute_modular_inverse(long long int number, long long int modulus) {
-    int64_t t = 0, new_t = 1;
-    long long int r = modulus, new_r = number;
-
-    while (new_r != 0) {
-        long long int quotient = r / new_r;
-
-        long long int temp_t = new_t;
-        new_t = t - quotient * new_t;
-        t = temp_t;
-
-        long long int temp_r = new_r;
-        new_r = r - quotient * new_r;
-        r = temp_r;
-    }
-
-    if (r > 1) {
-        // The number is not invertible (not relatively prime to modulus)
-        return 0;
-    }
-
-    if (t < 0) {
-        t += modulus;
-    }
-
-    return t;
-}
-
-/** 
  * Performs Montgomery modular reduction.
  * Parameters:
  *   - result: The result of the modular exponentiation.
@@ -76,13 +40,13 @@ long long int compute_modular_inverse(long long int number, long long int modulu
  *   - m: The number of bits.
  * Returns: The reduced result after Montgomery modular reduction.
  */
-long long int montgomery_modular_reduction(long long int result, long long int modulus, long long int Y, long long int m) {
-    long long int factor = (1ULL << m) % modulus;
-    long long int R_inverse = compute_modular_inverse(factor, modulus); // Compute the modular inverse of the Montgomery factor R
+uint32_t montgomery_modular_reduction(uint32_t result, uint32_t modulus, uint32_t Y, uint32_t m) {
+    uint32_t factor = (1ULL << m) % modulus;
+    //uint32_t R_inverse = compute_modular_inverse(factor, modulus); // Compute the modular inverse of the Montgomery factor R
+    uint32_t R_inverse = 1;
+    uint32_t montgomery_result = montgomery_multiplication(result, 1, modulus); // Convert the result to Montgomery form
 
-    long long int montgomery_result = montgomery_multiplication(result, 1, modulus); // Convert the result to Montgomery form
-
-    long long int reduced_result = montgomery_multiplication(montgomery_result, R_inverse, modulus); // Perform the Montgomery reduction
+    uint32_t reduced_result = montgomery_multiplication(montgomery_result, R_inverse, modulus); // Perform the Montgomery reduction
 
     return reduced_result;
 }
@@ -97,10 +61,11 @@ long long int montgomery_modular_reduction(long long int result, long long int m
  *   - m: The number of bits.
  * Returns: The result of the modular exponentiation.
  */
-long long int montgomery_modular_exponentiation(long long int base, long long int exponent, long long int modulus, long long int Y, long long int m) {
-    long long int result = 1;
-    long long int R = (1ULL << m) % modulus;
-    long long int baseMont = montgomery_multiplication(base, R, modulus);  // R is the Montgomery factor
+uint32_t montgomery_modular_exponentiation(uint32_t base, uint32_t exponent, uint32_t modulus, uint32_t Y, uint32_t m) {
+    uint32_t result = 1;
+    //uint32_t R = (1ULL << m) % modulus;
+    uint32_t R = 1;
+    uint32_t baseMont = montgomery_multiplication(base, R, modulus);  // R is the Montgomery factor
 
     while (exponent > 0) {
         if (exponent & 1) {
