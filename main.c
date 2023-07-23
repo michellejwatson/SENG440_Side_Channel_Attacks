@@ -3,7 +3,7 @@
 ** No implementation for hiding or masking of execution time / power consumption 
 */
 
-//#include "arm_neon.h"
+#include "arm_neon.h"
 #include <stdio.h>
 #include <stdint.h>
 #include <time.h>
@@ -148,7 +148,7 @@ int main() {
     double total_time_decrypt = (double)(end_decrypt - start_decrypt) / CLOCKS_PER_SEC;
 
     printf("********** RSA Decryption **********\n");
-    printf("Decrypted: %u\n", decrypted);
+    printf("Decrypted: %d\n", decrypted);
     printf("Time to execute decrypt: %.7f\n", total_time_decrypt);
 
     return 0;
