@@ -13,10 +13,10 @@
 OR Run `make exe`: this will compile and create execution without neon
 3. Open another terminal, run `ssh <netlinkid>@seng440.ece.uvic.ca`
 4. Go to location where you ran `make neon` or `make exe`
-Steps with neon:
+### Steps with neon:
 5. Run `chmod +x RSA_Routine_Neon.exe`
 6. Run `qemu-arm RSA_Routine_Neon.exe`
-Steps without neon:
+### Steps without neon:<br>
 5. Run `lftp user1@arm`, sign in with password: `q6coHjd7P` and go to rsa folder using `cd rsa` or `mkdir rsa` if it doesn't exist
 6. Run `put RSA_Routine.exe`
 7. Run `chmod +x RSA_Routine.exe`
