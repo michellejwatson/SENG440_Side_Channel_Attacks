@@ -25,7 +25,6 @@ unsigned long long int montgomery_add(unsigned long long int a, unsigned long lo
 */
 unsigned long long int montgomery_multiplication(unsigned long long int a, unsigned long long int b, unsigned long long int modulus) {
     unsigned long long int result = 0;
-    unsigned long long int factor = (1ULL << 32) % modulus;
     int i;
 
     for (i = 0; i < 32; i++) {
@@ -50,7 +49,6 @@ unsigned long long int montgomery_multiplication(unsigned long long int a, unsig
 * Returns: The reduced result after Montgomery modular reduction.
 */
 unsigned long long int montgomery_modular_reduction(unsigned long long int result, unsigned long long int modulus, unsigned long long int Y, unsigned long long int m) {
-    unsigned long long int factor = (1ULL << m) % modulus;
     //unsigned long long int R_inverse = compute_modular_inverse(factor, modulus); // Compute the modular inverse of the Montgomery factor R
     unsigned long long int R_inverse = 1;
     unsigned long long int montgomery_result = montgomery_multiplication(result, 1, modulus); // Convert the result to Montgomery form
