@@ -15,14 +15,6 @@ unsigned long long int montgomery_add(unsigned long long int a, unsigned long lo
     return sum;
 }
 
-// Helper function to perform modular subtraction
-unsigned long long int montgomery_sub(unsigned long long int a, unsigned long long int b, unsigned long long int modulus) {
-    unsigned long long int diff = a - b;
-    if (a < b)
-        diff += modulus;
-    return diff;
-}
-
 /**
 * Performs Montgomery modular multiplication.
 * Parameters:
