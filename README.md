@@ -9,9 +9,14 @@
 ## HOW TO USE WITH SSH
 1. Open terminal, run `ssh <netlinkid>@ugls.ece.uvic.ca`
 2. Go to the SENG_440_Side_Channel_Attacks repository (wherever you cloned it to)
-2. Run `make neon`: this will compile and create executable 
+2. Run `make neon`: this will compile and create executable with neon (and generates .s assembly code)
+OR Run `make exe`: this will compile and create execution without neon
 3. Open another terminal, run `ssh <netlinkid>@seng440.ece.uvic.ca`
-4. Go to location where you ran `make neon`
+4. Go to location where you ran `make neon` or `make exe`
+Steps with neon:
+5. Run `chmod +x RSA_Routine_Neon.exe`
+6. Run `qemu-arm RSA_Routine_Neon.exe`
+Steps without neon:
 5. Run `lftp user1@arm`, sign in with password: `q6coHjd7P` and go to rsa folder using `cd rsa` or `mkdir rsa` if it doesn't exist
 6. Run `put RSA_Routine.exe`
 7. Run `chmod +x RSA_Routine.exe`
