@@ -27,7 +27,7 @@ unsigned long long int montgomery_multiplication(unsigned long long int a, unsig
     unsigned long long int result = 0;
     int i;
 
-    for (i = 0; i < 32; i++) {
+    for (i = 0; i <  64; i++) {
         if (b % 2 == 1) result = montgomery_add(result, a, modulus);
 
         a = (a << 1) % modulus;
