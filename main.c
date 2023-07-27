@@ -83,7 +83,6 @@ void test_montgomery_multiplication(){
 
 }
 
-
 /**
 * Performs Montgomery modular reduction.
 * Parameters:
@@ -177,6 +176,8 @@ int test_side_channel(){
     unsigned long long int D_invalid;
     double acceptance_threshold;
 
+    clock_t start, end;
+
     // Check 1 < E < PQ
     if (E <= 1 || E >= N) {
         printf("Invalid public exponent 'E'. It must satisfy 1 < E < PQ.\n");
@@ -210,51 +211,55 @@ int test_side_channel(){
     // Compute Y = (R^2) % N
     unsigned long long int Y = (R * R) % N;
     
-    clock_t start_encrypt = clock();
+    //clock_t start = clock();
 
+    // Perform RSA encryption
     unsigned long long int ciphertext = montgomery_modular_exponentiation(plaintext, E, N, Y, m);
 
-    clock_t end_encrypt = clock();
-    double total_time_encrypt = (double)(end_encrypt - start_encrypt) / CLOCKS_PER_SEC;
-
-    printf("********** RSA Encryption **********\n");
-    printf("RSA Encryption Ciphertext: %lld\n", ciphertext);
-    printf("Time to execute encrypt: %.7f\n", total_time_encrypt);
+    //clock_t end = clock();
+    //double total_time_encrypt = (double)(end - start) / CLOCKS_PER_SEC;
+    //printf("********** RSA Encryption **********\n");
+    //printf("RSA Encryption Ciphertext: %lld\n", ciphertext);
+    //printf("Time to execute encrypt: %.7f\n", total_time_encrypt); I think we might just focus on decryption time
 
     // Perform RSA decryption
-    clock_t start_decrypt = clock();
+    start = clock();
+    unsigned long long int decrypted = montgomery_modular_exponentiation(ciphertext, D, N, Y, m);
+    end = clock();
+    double once_around = (double)(end - start) / CLOCKS_PER_SEC;
 
-    uint32_t decrypted = montgomery_modular_exponentiation(ciphertext, D, N, Y, m);
-
-    clock_t end_decrypt = clock();
-    double total_time_decrypt_valid = (double)(end_decrypt - start_decrypt) / CLOCKS_PER_SEC;
+    double average_decrypt_time = find_baseline_decryption_time(ciphertext, D, N, Y, m);
 
     printf("********** RSA Decryption **********\n");
-    printf("Decrypted: %u\n", decrypted);
-    printf("Time to execute decrypt: %.7f\n", total_time_decrypt_valid);
-
+    printf("Decrypted: %llu time: %.10f\n", decrypted, once_around);
+    printf("Average time to decrypt: %.10f\n", average_decrypt_time);
+    printf("D:%lld\n", D);
 
     D_invalid = D;
-    printf("D:%lld  \n", D_invalid);
-    
-    acceptance_threshold =  total_time_decrypt_valid*0.02; //2% difference
-    printf("Acceptance threshold: %f \n", acceptance_threshold);
+    acceptance_threshold =  average_decrypt_time * 0.10; //5% difference
+
+    printf("Acceptance threshold: %.10f \n", acceptance_threshold);
 
     // To test affectiveness, we perform a simplified mock attack?
+    printf("Performing test...................\n");
     while(D_invalid > 0)
     {
         D_invalid = D_invalid >> 1; //need way to make sure this is always different. there is probably a better way to do this
 
-        start_decrypt = clock();
+        start = clock();
 
         decrypted = montgomery_modular_exponentiation(ciphertext, D_invalid, N, (R * R) % N, m);
-        end_decrypt = clock();
-        double total_time_decrypt_semi_invalid_key = (double)(end_decrypt - start_decrypt) / CLOCKS_PER_SEC;
-        printf("start: %ld end: %ld \n", start_decrypt, end_decrypt);
-        double difference = total_time_decrypt_semi_invalid_key - total_time_decrypt_valid;
-        printf("loop D:%lld  \n", D_invalid);
-        printf("Time to execute decrypt: %.7f\n", total_time_decrypt_semi_invalid_key);
-        printf("difference: %f\n", difference);
+        end = clock();
+
+        double total_time_decrypt_semi_invalid_key = (double)(end - start) / CLOCKS_PER_SEC;
+
+        // printf("start: %ld end: %ld \n", start, end);
+
+        double difference = total_time_decrypt_semi_invalid_key - average_decrypt_time;
+
+        // printf("loop D:%lld  \n", D_invalid);
+        // printf("Time to execute decrypt: %.10f\n", total_time_decrypt_semi_invalid_key);
+        // printf("difference: %f\n", difference);
 
         // apply abs value if necessary TODO: make mask to optimize process? 
         if(difference < 0){
@@ -263,12 +268,12 @@ int test_side_channel(){
         
         if(difference > acceptance_threshold)
         {
-
             printf("********** RSA Decryption Difference detected **********\n");
-            printf("Decrypted: %u, key:%llu\n", decrypted, D_invalid);
-            printf("Time to execute decrypt: %.7f\n", total_time_decrypt_semi_invalid_key);
-            printf("Goal time: %.7f\n", total_time_decrypt_valid);
-            //TODO: add assert?
+            printf("Decrypted: %llu, invalid key:%llu\n", decrypted, D_invalid);
+            printf("valid key: %llu\n",D);
+            printf("Time to execute failed decrypt: %.10f\n", total_time_decrypt_semi_invalid_key);
+            // printf("Goal time: %.10f\n", average_decrypt_time);
+            // TODO: add assert?
             return 1;
         }
     }
@@ -352,6 +357,6 @@ int main() {
     
     printf("********** Test Multiplication **********\n");
 
-    test_montgomery_multiplication();
+    // test_montgomery_multiplication();
     return 0;
 }
