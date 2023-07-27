@@ -132,6 +132,36 @@ unsigned long long int montgomery_modular_exponentiation(unsigned long long int 
     return montgomery_modular_reduction(result, modulus, Y, m); // Montgomery reduction after exponentiation
 }
 
+/**
+* Finds average time to decrypt a ciphertext
+* Parameters:
+* - ciphertext: to be decrypted.
+* - D: The exponent value.
+* - N: The modulus.
+* - Y: The Montgomery factor.
+* - m: The number of bits.
+* Returns: The average time to perform the decryption
+*/
+double find_baseline_decryption_time(unsigned long long int ciphertext, unsigned long long int D, unsigned long long int N, unsigned long long int Y, unsigned long long int m){
+    int num_loops = 100;
+    unsigned long long int decrypted;
+    clock_t start_decrypt;
+    clock_t end_decrypt;
+    clock_t total_count;
+
+    for(int i = 0; i < num_loops; i++)
+    {
+        start_decrypt = clock();
+        decrypted = montgomery_modular_exponentiation(ciphertext, D, N, Y, m);
+        end_decrypt = clock();
+        total_count += (end_decrypt - start_decrypt);
+    }
+
+    double total_time = (double)(total_count) / CLOCKS_PER_SEC;
+    double average_time = total_time/num_loops;
+    return average_time;
+}
+
 //make this more modular
 int test_side_channel(){
 
@@ -245,21 +275,7 @@ int test_side_channel(){
     return 0;
 }
 
-//TODO:
-double find_base_line_decryption_time(unsigned long long int ciphertext, unsigned long long int D, unsigned long long int N, unsigned long long int Y, unsigned long long int m){
 
-    int num_loops = 100;
-    clock_t start_decrypt = clock();
-
-    for(int i = 0; i < num_loops; i++)
-    {
-        uint32_t decrypted = montgomery_modular_exponentiation(ciphertext, D, N, Y, m);
-    }
-    clock_t end_decrypt = clock();
-
-    double total_time = 
-    return 0
-}
 
 // 
 
