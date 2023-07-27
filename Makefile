@@ -7,5 +7,8 @@ exe_neon:
 neon:
 	cp ./main.c /tmp/main.c && make assemble_neon && make exe_neon
 
+assemble_exe:
+	arm-linux-gcc -static -S /tmp/main.c 
+
 exe: 
-	cp ./main.c /tmp/main.c && arm-linux-gcc -static -o RSA_Routine.exe /tmp/main.c 
+	cp ./main.c /tmp/main.c && make assemble_exe && arm-linux-gcc -static -o RSA_Routine.exe /tmp/main.c 
