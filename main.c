@@ -166,33 +166,26 @@ int test_montgomery_addition(unsigned long a, unsigned long long int b, unsigned
     clock_t start;
     clock_t end;
 
-    //start timer
+    //Do with a < modulus
     start = clock();
-
     montgomery_add(a, b, modulus);
-
-    //end timer
     end = clock();
 
     double time_1 = (double)(end - start) / CLOCKS_PER_SEC;
 
-    //start timer
+    // Do addition with a > modulus
     start = clock();
-
     montgomery_add((a+modulus), b, modulus);
-
-    //end timer
     end = clock();
 
     double time_2 = (double)(end - start) / CLOCKS_PER_SEC;
 
-    printf("t1: %.10f t2: %.10f\n", time_1, time_2);
-    //assert(time_1 == time_2);
     if(time_1 == time_2) {
         printf("passed\n");
         return 1;
     }
     printf("FAILED\n");
+    printf("t1: %.10f t2: %.10f\n", time_1, time_2);
     return 0;
 }
 
@@ -311,7 +304,6 @@ int test_side_channel(unsigned long long int plaintext, unsigned long long int p
     return 0;
 }
 
-// 
 
 int main() {
     /** initial test **/
