@@ -4,13 +4,15 @@
 #include <stdio.h>
 #include <stdint.h>
 
+unsigned long long int montgomery_add(unsigned long long int a, unsigned long long int b, unsigned long long int modulus);
+
 /** Performs Montgomery modular multiplication **/
-uint32_t montgomery_multiplication(uint32_t a, uint32_t b, uint32_t modulus);
+unsigned long long int montgomery_multiplication(unsigned long long int a, unsigned long long int b, unsigned long long int modulus);
 
 /** Performs Montgomery modular reduction **/
-uint32_t montgomery_modular_reduction(uint32_t result, uint32_t modulus, uint32_t Y, uint32_t m);
+unsigned long long int montgomery_modular_reduction(unsigned long long int result, unsigned long long int modulus, unsigned long long int Y, unsigned long long int m);
 
 /** Performs Montgomery modular exponentiatio **/
-uint32_t montgomery_modular_exponentiation(uint32_t base, uint32_t exponent, uint32_t modulus, uint32_t Y, uint32_t m);
+unsigned long long int montgomery_modular_exponentiation(unsigned long long int base, unsigned long long int exponent, unsigned long long int modulus, unsigned long long int Y, unsigned long long int m);
 
 #endif
