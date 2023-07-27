@@ -164,13 +164,9 @@ double find_baseline_decryption_time(unsigned long long int ciphertext, unsigned
 //TODO: make this more modular
 int test_side_channel(unsigned long long int plaintext, unsigned long long int prime_num_1, unsigned long long int prime_num_2, unsigned long long int public_exponent){
 
-    unsigned long long int P = prime_num_1; // Prime Number P
-    unsigned long long int Q = prime_num_2; // Prime Number Q
-    unsigned long long int N = P * Q; // Modulus N
-    unsigned long long int phi = (P - 1) * (Q - 1); // Euler's totient function value
-    unsigned long long int E = public_exponent; // Public exponent
-    //unsigned long long int plaintext = 440;
-    unsigned long long int m = 64; // 64 bits
+    unsigned long long int modulus = prime_num_1 * prime_num_2; // Modulus N
+    unsigned long long int phi = (prime_num_1 - 1) * (prime_num_2 - 1); // Euler's totient function value
+    unsigned long long int m = 64; // 64 bit expected
     unsigned long long int D;
     unsigned long long int D_invalid;
     double acceptance_threshold_percent = 0.10;
@@ -179,24 +175,24 @@ int test_side_channel(unsigned long long int plaintext, unsigned long long int p
     clock_t start, end;
 
     // Check 1 < E < PQ
-    if (E <= 1 || E >= N) {
+    if (public_exponent <= 1 || public_exponent >= modulus) {
         printf("Invalid public exponent 'E'. It must satisfy 1 < E < PQ.\n");
         return -1;
     }
 
     // Check that plaintext is < PQ
-    if (plaintext >= N) {
+    if (plaintext >= modulus) {
         printf("Invalid plaintext value. It must satisfy plaintext < PQ.\n");
         return -1;
     }
 
     // Calculate the private exponent d using the formula D = (X(P-1)(Q-1) + 1) / E
     unsigned long long int X = 1;
-    while ((X * (P - 1) * (Q - 1) + 1) % E != 0) {
+    while ((X * (prime_num_1 - 1) * (prime_num_2 - 1) + 1) % public_exponent != 0) {
         X++;
     }
 
-    D = ((X * phi) + 1) / E;
+    D = ((X * phi) + 1) / public_exponent;
 
     // Public Key: (E, PQ)
     // Private Key: (D, PQ)
@@ -205,24 +201,24 @@ int test_side_channel(unsigned long long int plaintext, unsigned long long int p
     unsigned long long int R = 1;
     int i;
     for (i = 0; i < m; i++) {
-        R = (R << 1) % N;
+        R = (R << 1) % modulus;
     }
 
     // Compute Y = (R^2) % N
-    unsigned long long int Y = (R * R) % N;
+    unsigned long long int Y = (R * R) % modulus;
     
     //clock_t start = clock();
 
     // Perform RSA encryption
-    unsigned long long int ciphertext = montgomery_modular_exponentiation(plaintext, E, N, Y, m);
+    unsigned long long int ciphertext = montgomery_modular_exponentiation(plaintext, public_exponent, modulus, Y, m);
 
     // Perform RSA decryption
     start = clock();
-    unsigned long long int decrypted = montgomery_modular_exponentiation(ciphertext, D, N, Y, m);
+    unsigned long long int decrypted = montgomery_modular_exponentiation(ciphertext, D, modulus, Y, m);
     end = clock();
     double once_around = (double)(end - start) / CLOCKS_PER_SEC;
 
-    double average_decrypt_time = find_baseline_decryption_time(ciphertext, D, N, Y, m);
+    double average_decrypt_time = find_baseline_decryption_time(ciphertext, D, modulus, Y, m);
 
     printf("********** RSA Decryption **********\n");
     printf("Decrypted: %llu time: %.10f\n", decrypted, once_around);
@@ -242,7 +238,7 @@ int test_side_channel(unsigned long long int plaintext, unsigned long long int p
 
         start = clock();
 
-        decrypted = montgomery_modular_exponentiation(ciphertext, D_invalid, N, (R * R) % N, m);
+        decrypted = montgomery_modular_exponentiation(ciphertext, D_invalid, modulus, Y, m);
         end = clock();
 
         double total_time_decrypt_semi_invalid_key = (double)(end - start) / CLOCKS_PER_SEC;
