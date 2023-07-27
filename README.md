@@ -32,5 +32,5 @@ The value m can be changed to reflect the number of bits.
 m is set to 32 bits but to check with the example in the slides change the value of m to 5.
 
 #### HOW TO RUN LOCALLY
-Compile: ``gcc main.c RSA_functions.c -o RSA_Routine``     
+Compile: ``gcc RSA_functions.c tests.c main.c -o RSA_Routine``
 Run: ``./RSA_Routine``
