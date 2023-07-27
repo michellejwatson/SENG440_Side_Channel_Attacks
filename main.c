@@ -161,9 +161,43 @@ double find_baseline_decryption_time(unsigned long long int ciphertext, unsigned
     return average_time;
 }
 
-// TODO:
+// TODO: so this runs well sometimes, and wrong othertimes.
+int test_montgomery_addition(unsigned long a, unsigned long long int b, unsigned long long int modulus){
+    clock_t start;
+    clock_t end;
+
+    //start timer
+    start = clock();
+
+    montgomery_add(a, b, modulus);
+
+    //end timer
+    end = clock();
+
+    double time_1 = (double)(end - start) / CLOCKS_PER_SEC;
+
+    //start timer
+    start = clock();
+
+    montgomery_add((a+modulus), b, modulus);
+
+    //end timer
+    end = clock();
+
+    double time_2 = (double)(end - start) / CLOCKS_PER_SEC;
+
+    printf("t1: %.10f t2: %.10f\n", time_1, time_2);
+    //assert(time_1 == time_2);
+    if(time_1 == time_2) {
+        printf("passed\n");
+        return 1;
+    }
+    printf("FAILED\n");
+    return 0;
+}
+
 void test_montgomery_reduction(){}
-void test_montgomery_addition(){}
+
 void test_montgomery_modular_exponentiation(){}
 
 int test_side_channel(unsigned long long int plaintext, unsigned long long int prime_num_1, unsigned long long int prime_num_2, unsigned long long int public_exponent){
@@ -347,12 +381,17 @@ int main() {
     // printf("Decrypted: %llu\n", decrypted);
     // printf("Time to execute decrypt: %.7f\n", total_time_decrypt);
 
-    test_side_channel(plaintext, P, Q, E);
-    
+
+
+
+    // test_side_channel(plaintext, P, Q, E);
+
+    printf("********** Test Addition **********\n");
+
+    test_montgomery_addition(P, Q, N);
+
     printf("********** Test Multiplication **********\n");
 
-    test_montgomery_multiplication();
-
-    printf("********** Test Multiplication **********\n");
+    // test_montgomery_multiplication();
     return 0;
 }
