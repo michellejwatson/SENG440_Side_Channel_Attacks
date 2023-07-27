@@ -147,8 +147,9 @@ double find_baseline_decryption_time(unsigned long long int ciphertext, unsigned
     clock_t start_decrypt;
     clock_t end_decrypt;
     double total_time = 0;
+    int i;
 
-    for(int i = 0; i < num_loops; i++)
+    for(i = 0; i < num_loops; i++)
     {
         start_decrypt = clock();
         decrypted = montgomery_modular_exponentiation(ciphertext, D, N, Y, m);
