@@ -231,3 +231,63 @@ int test_side_channel(unsigned long long int plaintext, unsigned long long int p
 
     return 0;
 }
+
+int test_encrypt_decrypt(unsigned long long int plaintext, unsigned long long int prime_num_1, unsigned long long int prime_num_2, unsigned long long int public_exponent) {
+
+    unsigned long long int modulus = prime_num_1 * prime_num_2; // Modulus N
+    unsigned long long int phi = (prime_num_1 - 1) * (prime_num_2 - 1); // Euler's totient function value
+    unsigned long long int m = 64; // 64 bit expected
+    unsigned long long int private_exponent;
+
+    // Check 1 < E < PQ
+    if (public_exponent <= 1 || public_exponent >= modulus) {
+        printf("Invalid public exponent 'E'. It must satisfy 1 < E < PQ.\n");
+        return -1;
+    }
+
+    // Check that plaintext is < PQ
+    if (plaintext >= modulus) {
+        printf("Invalid plaintext value. It must satisfy plaintext < PQ.\n");
+        return -1;
+    }
+
+    // Calculate the private exponent d using the formula D = (X(P-1)(Q-1) + 1) / E
+    unsigned long long int X = 1;
+    while ((X * (prime_num_1 - 1) * (prime_num_2 - 1) + 1) % public_exponent != 0) {
+        X++;
+    }
+
+    private_exponent = ((X * phi) + 1) / public_exponent;
+
+    // Public Key: (E, PQ)
+    // Private Key: (D, PQ)
+
+    // Compute R = (2^m) % N
+    unsigned long long int R = 1;
+    int i;
+    for (i = 0; i < m; i++) {
+        R = (R << 1) % modulus;
+    }
+
+    // Compute Y = (R^2) % N
+    unsigned long long int Y = (R * R) % modulus;
+
+    // Perform RSA encryption
+    unsigned long long int ciphertext = montgomery_modular_exponentiation(plaintext, public_exponent, modulus, Y, m);
+    
+    printf("********** RSA Encryption **********\n");
+    printf("RSA Encryption Ciphertext: %llu\n", ciphertext);
+
+    // Perform RSA decryption
+    unsigned long long int decrypted = montgomery_modular_exponentiation(ciphertext, private_exponent, modulus, Y, m);
+
+    printf("********** RSA Decryption **********\n");
+    printf("Decrypted: %llu\n", decrypted);
+
+    // check encryption worked
+    assert(ciphertext != plaintext);
+    // check decryption worked
+    assert(decrypted == plaintext);
+    
+    return 0;
+}

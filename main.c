@@ -21,74 +21,79 @@ int main() {
     unsigned long long int m = 64; // 64 bits
     unsigned long long int D;
 
-    // Check 1 < E < PQ
-    if (E <= 1 || E >= N) {
-        printf("Invalid public exponent 'E'. It must satisfy 1 < E < PQ.\n");
-        return -1;
-    }
+    // test baseline functionality of program works
+    test_encrypt_decrypt(plaintext, P, Q, E);
 
-    // Check that plaintext is < PQ
-    if (plaintext >= N) {
-        printf("Invalid plaintext value. It must satisfy plaintext < PQ.\n");
-        return -1;
-    }
+    // // ORIGINAL TEST -------------------------------------------------------
+    
+    // // Check 1 < E < PQ
+    // if (E <= 1 || E >= N) {
+    //     printf("Invalid public exponent 'E'. It must satisfy 1 < E < PQ.\n");
+    //     return -1;
+    // }
 
-    // Calculate the private exponent d using the formula D = (X(P-1)(Q-1) + 1) / E
-    unsigned long long int X = 1;
-    while ((X * (P - 1) * (Q - 1) + 1) % E != 0) {
-        X++;
-    }
+    // // Check that plaintext is < PQ
+    // if (plaintext >= N) {
+    //     printf("Invalid plaintext value. It must satisfy plaintext < PQ.\n");
+    //     return -1;
+    // }
 
-    D = ((X * phi) + 1) / E;
+    // // Calculate the private exponent d using the formula D = (X(P-1)(Q-1) + 1) / E
+    // unsigned long long int X = 1;
+    // while ((X * (P - 1) * (Q - 1) + 1) % E != 0) {
+    //     X++;
+    // }
 
-    // Public Key: (E, PQ)
-    // Private Key: (D, PQ)
+    // D = ((X * phi) + 1) / E;
 
-    // Compute R = (2^m) % N
-    unsigned long long int R = 1;
-    int i;
-    for (i = 0; i < m; i++) {
-        R = (R << 1) % N;
-    }
+    // // Public Key: (E, PQ)
+    // // Private Key: (D, PQ)
 
-    // Compute Y = (R^2) % N
-    unsigned long long int Y = (R * R) % N;
+    // // Compute R = (2^m) % N
+    // unsigned long long int R = 1;
+    // int i;
+    // for (i = 0; i < m; i++) {
+    //     R = (R << 1) % N;
+    // }
 
-    // Perform RSA encryption
-    clock_t start_encrypt = clock();
+    // // Compute Y = (R^2) % N
+    // unsigned long long int Y = (R * R) % N;
 
-    unsigned long long int ciphertext = montgomery_modular_exponentiation(plaintext, E, N, Y, m);
+    // // Perform RSA encryption
+    // clock_t start_encrypt = clock();
 
-    clock_t end_encrypt = clock();
-    double total_time_encrypt = (double)(end_encrypt - start_encrypt) / CLOCKS_PER_SEC;
+    // unsigned long long int ciphertext = montgomery_modular_exponentiation(plaintext, E, N, Y, m);
 
-    printf("********** RSA Encryption **********\n");
-    printf("RSA Encryption Ciphertext: %llu\n", ciphertext);
-    printf("Time to execute encrypt: %.7f\n", total_time_encrypt);
+    // clock_t end_encrypt = clock();
+    // double total_time_encrypt = (double)(end_encrypt - start_encrypt) / CLOCKS_PER_SEC;
 
-    // Perform RSA decryption
-    clock_t start_decrypt = clock();
+    // printf("********** RSA Encryption **********\n");
+    // printf("RSA Encryption Ciphertext: %llu\n", ciphertext);
+    // printf("Time to execute encrypt: %.7f\n", total_time_encrypt);
 
-    unsigned long long int decrypted = montgomery_modular_exponentiation(ciphertext, D, N, Y, m);
+    // // Perform RSA decryption
+    // clock_t start_decrypt = clock();
 
-    clock_t end_decrypt = clock();
-    double total_time_decrypt = (double)(end_decrypt - start_decrypt) / CLOCKS_PER_SEC;
+    // unsigned long long int decrypted = montgomery_modular_exponentiation(ciphertext, D, N, Y, m);
 
-    printf("********** RSA Decryption **********\n");
-    printf("Decrypted: %llu\n", decrypted);
-    printf("Time to execute decrypt: %.7f\n", total_time_decrypt);
+    // clock_t end_decrypt = clock();
+    // double total_time_decrypt = (double)(end_decrypt - start_decrypt) / CLOCKS_PER_SEC;
 
+    // printf("********** RSA Decryption **********\n");
+    // printf("Decrypted: %llu\n", decrypted);
+    // printf("Time to execute decrypt: %.7f\n", total_time_decrypt);
 
+    // ORIGINAL TEST END ------------------------------------------------------------
 
+    // EXTRA TESTS ------------------------------------------------------------------
+    // test_side_channel(plaintext, P, Q, E);
 
-    test_side_channel(plaintext, P, Q, E);
+    // printf("********** Test Addition **********\n");
 
-    printf("********** Test Addition **********\n");
+    // test_montgomery_addition(P, Q, N);
 
-    test_montgomery_addition(P, Q, N);
+    // printf("********** Test Multiplication **********\n");
 
-    printf("********** Test Multiplication **********\n");
-
-    test_montgomery_multiplication();
+    // test_montgomery_multiplication();
     return 0;
 }
