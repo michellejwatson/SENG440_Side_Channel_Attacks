@@ -103,7 +103,6 @@ unsigned long long int montgomery_modular_reduction(unsigned long long int resul
     return reduced_result;
 }
 
-
 /**
 * Performs Montgomery modular exponentiation.
 * Parameters:
@@ -162,7 +161,11 @@ double find_baseline_decryption_time(unsigned long long int ciphertext, unsigned
     return average_time;
 }
 
-//TODO: make this more modular
+// TODO:
+void test_montgomery_reduction(){}
+void test_montgomery_addition(){}
+void test_montgomery_modular_exponentiation(){}
+
 int test_side_channel(unsigned long long int plaintext, unsigned long long int prime_num_1, unsigned long long int prime_num_2, unsigned long long int public_exponent){
 
     unsigned long long int modulus = prime_num_1 * prime_num_2; // Modulus N
