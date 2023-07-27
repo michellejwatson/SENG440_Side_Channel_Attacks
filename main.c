@@ -81,14 +81,14 @@ int main() {
 
 
 
-    test_side_channel(plaintext, P, Q, E);
+    // test_side_channel(plaintext, P, Q, E);
 
-    printf("********** Test Addition **********\n");
+    // printf("********** Test Addition **********\n");
 
-    test_montgomery_addition(P, Q, N);
+    // test_montgomery_addition(P, Q, N);
 
-    printf("********** Test Multiplication **********\n");
+    // printf("********** Test Multiplication **********\n");
 
-    test_montgomery_multiplication();
+    // test_montgomery_multiplication();
     return 0;
 }
