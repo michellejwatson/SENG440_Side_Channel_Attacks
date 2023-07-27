@@ -6,6 +6,7 @@
 #include <stdio.h>
 #include <stdint.h>
 #include <time.h>
+#include <assert.h>
 
 // Helper function to perform modular addition
 unsigned long long int montgomery_add(unsigned long long int a, unsigned long long int b, unsigned long long int modulus) {
@@ -27,7 +28,7 @@ unsigned long long int montgomery_multiplication(unsigned long long int a, unsig
     unsigned long long int result = 0;
     int i;
 
-    for (i = 0; i <  64; i++) {
+    for (i = 0; i <  64; i++) { //modulus instead of static?
         if (b % 2 == 1) result = montgomery_add(result, a, modulus);
 
         a = (a << 1) % modulus;
@@ -167,7 +168,7 @@ int test_side_channel(unsigned long long int plaintext, unsigned long long int p
     unsigned long long int modulus = prime_num_1 * prime_num_2; // Modulus N
     unsigned long long int phi = (prime_num_1 - 1) * (prime_num_2 - 1); // Euler's totient function value
     unsigned long long int m = 64; // 64 bit expected
-    unsigned long long int D;
+    unsigned long long int private_exponent;
     unsigned long long int D_invalid;
     double acceptance_threshold_percent = 0.10;
     double acceptance_threshold; // calculated later using given acceptance_threshold_percent.
@@ -192,7 +193,7 @@ int test_side_channel(unsigned long long int plaintext, unsigned long long int p
         X++;
     }
 
-    D = ((X * phi) + 1) / public_exponent;
+    private_exponent = ((X * phi) + 1) / public_exponent;
 
     // Public Key: (E, PQ)
     // Private Key: (D, PQ)
@@ -214,18 +215,20 @@ int test_side_channel(unsigned long long int plaintext, unsigned long long int p
 
     // Perform RSA decryption
     start = clock();
-    unsigned long long int decrypted = montgomery_modular_exponentiation(ciphertext, D, modulus, Y, m);
+    unsigned long long int decrypted = montgomery_modular_exponentiation(ciphertext, private_exponent, modulus, Y, m);
     end = clock();
     double once_around = (double)(end - start) / CLOCKS_PER_SEC;
 
-    double average_decrypt_time = find_baseline_decryption_time(ciphertext, D, modulus, Y, m);
+    double average_decrypt_time = find_baseline_decryption_time(ciphertext, private_exponent, modulus, Y, m);
 
     printf("********** RSA Decryption **********\n");
+    // check decrytion worked
+    assert(decrypted == plaintext);
     printf("Decrypted: %llu time: %.10f\n", decrypted, once_around);
     printf("Average time to decrypt: %.10f\n", average_decrypt_time);
-    printf("D:%lld\n", D);
+    printf("D:%lld\n", private_exponent);
 
-    D_invalid = D;
+    D_invalid = private_exponent;
     acceptance_threshold =  average_decrypt_time * acceptance_threshold_percent;
 
     printf("Acceptance threshold: %.10f \n", acceptance_threshold);
@@ -260,7 +263,7 @@ int test_side_channel(unsigned long long int plaintext, unsigned long long int p
         {
             printf("********** RSA Decryption Difference detected **********\n");
             printf("Decrypted: %llu, invalid key:%llu\n", decrypted, D_invalid);
-            printf("valid key: %llu\n",D);
+            printf("valid key: %llu\n", private_exponent);
             printf("Time to execute failed decrypt: %.10f\n", total_time_decrypt_semi_invalid_key);
             // printf("Goal time: %.10f\n", average_decrypt_time);
             // TODO: add assert?
