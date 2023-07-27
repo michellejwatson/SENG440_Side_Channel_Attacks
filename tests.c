@@ -232,6 +232,15 @@ int test_side_channel(unsigned long long int plaintext, unsigned long long int p
     return 0;
 }
 
+/**
+ * Verifies program can encrypt and decrypt plaintext
+ * Parameters:
+ *  - plaintext: to be encrypted
+ *  - modulus: shared portion of public and private key. Used for encryption and decryption
+ *  - public_exponent: second part of public key, used to encrypt message
+ *  - private_exponent: second part of private key, used to decrypt message
+ *  - montgomery_factor: TODO: check needed.
+*/
 int test_encrypt_decrypt(unsigned long long int plaintext, unsigned long long int modulus, unsigned long long int public_exponent, unsigned long long int private_exponent, unsigned long long int montgomery_factor) {
     unsigned long long int m = 64; // 64 bit expected -> TODO: is this always hardcoded?
 

@@ -83,7 +83,7 @@ int main() {
 
     // Calculate required values
     D = generate_private_exponent(P, Q, E);
-    montgomery_factor = calculate_monegomery_factor(N, m);
+    montgomery_factor = calculate_montgomery_factor(N, m);
 
     // test baseline functionality of program works
     test_encrypt_decrypt(plaintext, N, E, D, montgomery_factor);
