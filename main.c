@@ -147,17 +147,18 @@ double find_baseline_decryption_time(unsigned long long int ciphertext, unsigned
     unsigned long long int decrypted;
     clock_t start_decrypt;
     clock_t end_decrypt;
-    clock_t total_count;
+    //clock_t total_count;
+    double total_time = 0;
 
     for(int i = 0; i < num_loops; i++)
     {
         start_decrypt = clock();
         decrypted = montgomery_modular_exponentiation(ciphertext, D, N, Y, m);
         end_decrypt = clock();
-        total_count += (end_decrypt - start_decrypt);
+        total_time += (double)(end_decrypt - start_decrypt);
     }
 
-    double total_time = (double)(total_count) / CLOCKS_PER_SEC;
+    total_time = (double)(total_time) / CLOCKS_PER_SEC;
     double average_time = total_time/num_loops;
     return average_time;
 }
