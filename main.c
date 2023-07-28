@@ -85,41 +85,26 @@ int main() {
     D = generate_private_exponent(P, Q, E);
     montgomery_factor = calculate_montgomery_factor(N, m);
 
-<<<<<<< HEAD
     // test baseline functionality of program works
     test_encrypt_decrypt(plaintext, N, E, D, montgomery_factor);
-=======
     D = ((X * phi) + 1) / E;
 
     // Public Key: (E, PQ)
     // Private Key: (D, PQ)
 
     RSA_encryption_decryption(plaintext, E, N, D, m);
->>>>>>> main
 
 
 
     // EXTRA TESTS ------------------------------------------------------------------
     // test_side_channel(plaintext, P, Q, E);
 
-<<<<<<< HEAD
     // printf("********** Test Addition **********\n");
 
     // test_montgomery_addition(P, Q, N);
 
     // printf("********** Test Multiplication **********\n");
 
-=======
-
-    // test_side_channel(plaintext, P, Q, E);
-
-    // printf("********** Test Addition **********\n");
-
-    // test_montgomery_addition(P, Q, N);
-
-    // printf("********** Test Multiplication **********\n");
-
->>>>>>> main
     // test_montgomery_multiplication();
     return 0;
 }
