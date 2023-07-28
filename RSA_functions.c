@@ -27,15 +27,24 @@ unsigned long long int montgomery_add(unsigned long long int a, unsigned long lo
 */
 unsigned long long int montgomery_multiplication(unsigned long long int a, unsigned long long int b, unsigned long long int modulus) {
     unsigned long long int result = 0;
+    unsigned long long int dummy = 0;
     int i;
 
     for (i = 0; i < 64; i++) { //modulus instead of static?
-        if (b % 2 == 1) result = montgomery_add(result, a, modulus);
+        if (b % 2 == 1){
+            result = montgomery_add(result, a, modulus);
+        } else {
+            dummy = montgomery_add(result, a, modulus); 
+        }
 
         a = (a << 1) % modulus;
         b = b >> 1;
 
-        if (a >= modulus) a = montgomery_add(a, a, modulus);
+        if (a >= modulus) {
+            a = montgomery_add(a, a, modulus);
+        } else {
+            dummy = montgomery_add(a, a, modulus);
+        }
     }
 
     return result;
