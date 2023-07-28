@@ -125,6 +125,141 @@ montgomery_multiplication:
 	b	.L19
 	.size	montgomery_multiplication, .-montgomery_multiplication
 	.align	2
+	.global	montgomery_modular_reduction
+	.type	montgomery_modular_reduction, %function
+montgomery_modular_reduction:
+	@ Function supports interworking.
+	@ args = 8, pretend = 0, frame = 0
+	@ frame_needed = 0, uses_anonymous_args = 0
+	stmfd	sp!, {r3, r4, r5, r6, r7, r8, r9, sl, fp, lr}
+	mov	r4, r0
+	mov	r5, r1
+	mov	r8, r2
+	mov	r9, r3
+	mov	r0, #1
+	mov	r6, #0
+	mov	r7, #0
+	mov	sl, #0
+	b	.L30
+.L39:
+	adds	r4, r4, r4
+	adc	r5, r5, r5
+	cmp	r9, r5
+	bhi	.L27
+	beq	.L48
+.L40:
+	subs	r4, r4, r8
+	sbc	r5, r5, r9
+.L27:
+	add	sl, sl, #1
+	cmp	sl, #64
+	mov	r0, #0
+	mov	r1, #0
+	beq	.L49
+.L30:
+	and	r3, r0, #1
+	cmp	r3, #0
+	beq	.L25
+	adds	r6, r6, r4
+	adc	r7, r7, r5
+	cmp	r9, r7
+	bhi	.L25
+	beq	.L50
+.L38:
+	subs	r6, r6, r8
+	sbc	r7, r7, r9
+.L25:
+	adds	r0, r4, r4
+	adc	r1, r5, r5
+	mov	r2, r8
+	mov	r3, r9
+	bl	__aeabi_uldivmod
+	cmp	r9, r3
+	mov	r4, r2
+	mov	r5, r3
+	bhi	.L27
+	bne	.L39
+	cmp	r8, r2
+	bls	.L39
+	add	sl, sl, #1
+	cmp	sl, #64
+	mov	r0, #0
+	mov	r1, #0
+	bne	.L30
+.L49:
+	mov	sl, r0
+	mov	fp, r1
+	mov	r3, #1
+	mov	r5, #0
+	b	.L36
+.L42:
+	adds	r6, r6, r6
+	adc	r7, r7, r7
+	cmp	r9, r7
+	bhi	.L33
+	beq	.L51
+.L43:
+	subs	r6, r6, r8
+	sbc	r7, r7, r9
+.L33:
+	add	r5, r5, #1
+	cmp	r5, #64
+	mov	r3, #0
+	mov	r4, #0
+	beq	.L52
+.L36:
+	and	r3, r3, #1
+	cmp	r3, #0
+	beq	.L31
+	adds	sl, sl, r6
+	adc	fp, fp, r7
+	cmp	r9, fp
+	bhi	.L31
+	beq	.L53
+.L41:
+	subs	sl, sl, r8
+	sbc	fp, fp, r9
+.L31:
+	adds	r0, r6, r6
+	adc	r1, r7, r7
+	mov	r2, r8
+	mov	r3, r9
+	bl	__aeabi_uldivmod
+	cmp	r9, r3
+	mov	r6, r2
+	mov	r7, r3
+	bhi	.L33
+	bne	.L42
+	cmp	r8, r2
+	bls	.L42
+	add	r5, r5, #1
+	cmp	r5, #64
+	mov	r3, #0
+	mov	r4, #0
+	bne	.L36
+.L52:
+	mov	r1, fp
+	mov	r0, sl
+	ldmfd	sp!, {r3, r4, r5, r6, r7, r8, r9, sl, fp, lr}
+	bx	lr
+.L50:
+	cmp	r8, r6
+	bhi	.L25
+	b	.L38
+.L48:
+	cmp	r8, r4
+	bhi	.L27
+	b	.L40
+.L53:
+	cmp	r8, sl
+	bhi	.L31
+	b	.L41
+.L51:
+	cmp	r8, r6
+	bhi	.L33
+	b	.L43
+	.size	montgomery_modular_reduction, .-montgomery_modular_reduction
+	.align	2
 	.global	montgomery_modular_exponentiation
 	.type	montgomery_modular_exponentiation, %function
 montgomery_modular_exponentiation:
@@ -140,40 +275,40 @@ montgomery_modular_exponentiation:
 	mov	sl, #0
 	mov	fp, #0
 	mov	r6, #0
-	b	.L30
-.L63:
+	b	.L60
+.L93:
 	adds	r4, r4, r4
 	ldr	r1, [sp, #52]
 	adc	r5, r5, r5
 	cmp	r1, r5
-	bhi	.L27
-	beq	.L84
-.L64:
+	bhi	.L57
+	beq	.L114
+.L94:
 	add	r1, sp, #48
 	ldmia	r1, {r0-r1}
 	subs	r4, r4, r0
 	sbc	r5, r5, r1
-.L27:
+.L57:
 	add	r6, r6, #1
 	cmp	r6, #64
 	mov	r2, #0
-	beq	.L85
-.L30:
+	beq	.L115
+.L60:
 	and	r3, r2, #1
 	cmp	r3, #0
-	beq	.L25
+	beq	.L55
 	adds	sl, sl, r4
 	ldr	r0, [sp, #52]
 	adc	fp, fp, r5
 	cmp	r0, fp
-	bhi	.L25
-	beq	.L86
-.L62:
+	bhi	.L55
+	beq	.L116
+.L92:
 	add	r3, sp, #48
 	ldmia	r3, {r2-r3}
 	subs	sl, sl, r2
 	sbc	fp, fp, r3
-.L25:
+.L55:
 	adds	r0, r4, r4
 	adc	r1, r5, r5
 	add	r3, sp, #48
@@ -183,70 +318,70 @@ montgomery_modular_exponentiation:
 	ldr	r3, [sp, #52]
 	cmp	r3, r5
 	mov	r4, r2
-	bhi	.L27
-	bne	.L63
+	bhi	.L57
+	bne	.L93
 	ldr	r0, [sp, #48]
 	cmp	r0, r4
-	bls	.L63
+	bls	.L93
 	add	r6, r6, #1
 	cmp	r6, #64
 	mov	r2, #0
-	bne	.L30
-.L85:
+	bne	.L60
+.L115:
 	ldmia	sp, {r1, r2}	@ phole ldm
 	orrs	r1, r1, r2
-	beq	.L31
+	beq	.L61
 	ldr	r0, [sp, #0]
 	and	r3, r0, #1
 	cmp	r3, #0
 	mov	r4, #1
 	mov	r5, #0
-	bne	.L87
-.L32:
+	bne	.L117
+.L62:
 	str	r4, [sp, #8]
 	str	r5, [sp, #12]
-.L38:
+.L68:
 	mov	r4, sl
 	mov	r5, fp
 	mov	r6, #0
 	mov	r7, #0
 	mov	r8, #0
-	b	.L46
-.L69:
+	b	.L76
+.L99:
 	adds	r4, r4, r4
 	ldr	r3, [sp, #52]
 	adc	r5, r5, r5
 	cmp	r3, r5
-	bhi	.L42
-	beq	.L88
-.L70:
+	bhi	.L72
+	beq	.L118
+.L100:
 	add	r2, sp, #48
 	ldmia	r2, {r1-r2}
 	subs	r4, r4, r1
 	sbc	r5, r5, r2
-.L42:
+.L72:
 	add	r8, r8, #1
 	cmp	r8, #64
-	beq	.L45
-.L90:
+	beq	.L75
+.L120:
 	movs	fp, fp, lsr #1
 	mov	sl, sl, rrx
-.L46:
+.L76:
 	and	r3, sl, #1
 	cmp	r3, #0
-	beq	.L40
+	beq	.L70
 	adds	r6, r6, r4
 	ldr	r2, [sp, #52]
 	adc	r7, r7, r5
 	cmp	r2, r7
-	bhi	.L40
-	beq	.L89
-.L68:
+	bhi	.L70
+	beq	.L119
+.L98:
 	add	r1, sp, #48
 	ldmia	r1, {r0-r1}
 	subs	r6, r6, r0
 	sbc	r7, r7, r1
-.L40:
+.L70:
 	adds	r0, r4, r4
 	adc	r1, r5, r5
 	add	r3, sp, #48
@@ -256,21 +391,21 @@ montgomery_modular_exponentiation:
 	mov	r5, r3
 	cmp	r1, r5
 	mov	r4, r2
-	bhi	.L42
-	bne	.L69
+	bhi	.L72
+	bne	.L99
 	ldr	r2, [sp, #48]
 	cmp	r2, r4
-	bls	.L69
+	bls	.L99
 	add	r8, r8, #1
 	cmp	r8, #64
-	bne	.L90
-.L45:
+	bne	.L120
+.L75:
 	ldmia	sp, {r2-r3}
 	movs	r3, r3, lsr #1
 	mov	r2, r2, rrx
 	stmia	sp, {r2-r3}
 	orrs	r2, r2, r3
-	beq	.L47
+	beq	.L77
 	ldr	r0, [sp, #0]
 	and	r3, r0, #1
 	cmp	r3, #0
@@ -278,8 +413,8 @@ montgomery_modular_exponentiation:
 	ldmia	r5, {r4-r5}
 	mov	sl, r6
 	mov	fp, r7
-	beq	.L32
-.L87:
+	beq	.L62
+.L117:
 	mov	r1, #0
 	mov	r2, #0
 	mov	r6, sl
@@ -287,29 +422,29 @@ montgomery_modular_exponentiation:
 	str	r1, [sp, #8]
 	str	r2, [sp, #12]
 	mov	r8, #0
-	b	.L39
-.L66:
+	b	.L69
+.L96:
 	adds	r4, r4, r4
 	ldr	r3, [sp, #52]
 	adc	r5, r5, r5
 	cmp	r3, r5
-	bhi	.L35
-	beq	.L91
-.L67:
+	bhi	.L65
+	beq	.L121
+.L97:
 	add	r2, sp, #48
 	ldmia	r2, {r1-r2}
 	subs	r4, r4, r1
 	sbc	r5, r5, r2
-.L35:
+.L65:
 	add	r8, r8, #1
 	cmp	r8, #64
-	beq	.L38
+	beq	.L68
 	movs	r7, r7, lsr #1
 	mov	r6, r6, rrx
-.L39:
+.L69:
 	and	r3, r6, #1
 	cmp	r3, #0
-	beq	.L33
+	beq	.L63
 	add	r3, sp, #8
 	ldmia	r3, {r2-r3}
 	ldr	r0, [sp, #52]
@@ -318,9 +453,9 @@ montgomery_modular_exponentiation:
 	cmp	r0, r3
 	str	r2, [sp, #8]
 	str	r3, [sp, #12]
-	bhi	.L33
-	beq	.L92
-.L65:
+	bhi	.L63
+	beq	.L122
+.L95:
 	add	r3, sp, #8
 	ldmia	r3, {r2-r3}
 	add	r1, sp, #48
@@ -329,7 +464,7 @@ montgomery_modular_exponentiation:
 	sbc	r3, r3, r1
 	str	r2, [sp, #8]
 	str	r3, [sp, #12]
-.L33:
+.L63:
 	adds	r0, r4, r4
 	adc	r1, r5, r5
 	add	r3, sp, #48
@@ -339,54 +474,54 @@ montgomery_modular_exponentiation:
 	mov	r5, r3
 	cmp	r1, r5
 	mov	r4, r2
-	bhi	.L35
-	bne	.L66
+	bhi	.L65
+	bne	.L96
 	ldr	r2, [sp, #48]
 	cmp	r2, r4
-	bhi	.L35
-	b	.L66
-.L86:
+	bhi	.L65
+	b	.L96
+.L116:
 	ldr	r1, [sp, #48]
 	cmp	r1, sl
-	bhi	.L25
-	b	.L62
-.L84:
+	bhi	.L55
+	b	.L92
+.L114:
 	ldr	r2, [sp, #48]
 	cmp	r2, r4
-	bhi	.L27
-	b	.L64
-.L89:
+	bhi	.L57
+	b	.L94
+.L119:
 	ldr	r3, [sp, #48]
 	cmp	r3, r6
-	bhi	.L40
-	b	.L68
-.L88:
+	bhi	.L70
+	b	.L98
+.L118:
 	ldr	r0, [sp, #48]
 	cmp	r0, r4
-	bhi	.L42
-	b	.L70
-.L91:
+	bhi	.L72
+	b	.L100
+.L121:
 	ldr	r0, [sp, #48]
 	cmp	r0, r4
-	bhi	.L35
-	b	.L67
-.L92:
+	bhi	.L65
+	b	.L97
+.L122:
 	ldr	r1, [sp, #48]
 	cmp	r1, r2
-	bhi	.L33
-	b	.L65
-.L31:
+	bhi	.L63
+	b	.L95
+.L61:
 	mov	r3, #1
 	mov	r4, #0
 	str	r3, [sp, #8]
 	str	r4, [sp, #12]
-.L47:
+.L77:
 	mov	r0, #1
 	mov	r4, #0
 	mov	r5, #0
 	mov	r6, #0
-	b	.L54
-.L72:
+	b	.L84
+.L102:
 	add	r3, sp, #8
 	ldmia	r3, {r2-r3}
 	ldr	r1, [sp, #52]
@@ -395,9 +530,9 @@ montgomery_modular_exponentiation:
 	cmp	r1, r3
 	str	r2, [sp, #8]
 	str	r3, [sp, #12]
-	bhi	.L51
-	beq	.L93
-.L73:
+	bhi	.L81
+	beq	.L123
+.L103:
 	add	r1, sp, #8
 	ldmia	r1, {r0-r1}
 	add	r3, sp, #48
@@ -406,30 +541,30 @@ montgomery_modular_exponentiation:
 	sbc	r1, r1, r3
 	str	r0, [sp, #8]
 	str	r1, [sp, #12]
-.L51:
+.L81:
 	add	r6, r6, #1
 	cmp	r6, #64
 	mov	r0, #0
 	mov	r1, #0
-	beq	.L94
-.L54:
+	beq	.L124
+.L84:
 	and	r3, r0, #1
 	cmp	r3, #0
-	beq	.L49
+	beq	.L79
 	add	r1, sp, #8
 	ldmia	r1, {r0-r1}
 	adds	r4, r4, r0
 	adc	r5, r5, r1
 	ldr	r1, [sp, #52]
 	cmp	r1, r5
-	bhi	.L49
-	beq	.L95
-.L71:
+	bhi	.L79
+	beq	.L125
+.L101:
 	add	r1, sp, #48
 	ldmia	r1, {r0-r1}
 	subs	r4, r4, r0
 	sbc	r5, r5, r1
-.L49:
+.L79:
 	add	r1, sp, #8
 	ldmia	r1, {r0-r1}
 	adds	r0, r0, r0
@@ -441,55 +576,55 @@ montgomery_modular_exponentiation:
 	cmp	r0, r3
 	str	r2, [sp, #8]
 	str	r3, [sp, #12]
-	bhi	.L51
-	bne	.L72
+	bhi	.L81
+	bne	.L102
 	ldr	r1, [sp, #48]
 	cmp	r1, r2
-	bls	.L72
+	bls	.L102
 	add	r6, r6, #1
 	cmp	r6, #64
 	mov	r0, #0
 	mov	r1, #0
-	bne	.L54
-.L94:
+	bne	.L84
+.L124:
 	mov	r6, r0
 	mov	r7, r1
 	mov	r2, #1
 	mov	r8, #0
-	b	.L60
-.L75:
+	b	.L90
+.L105:
 	adds	r4, r4, r4
 	ldr	r0, [sp, #52]
 	adc	r5, r5, r5
 	cmp	r0, r5
-	bhi	.L57
-	beq	.L96
-.L76:
+	bhi	.L87
+	beq	.L126
+.L106:
 	add	r3, sp, #48
 	ldmia	r3, {r2-r3}
 	subs	r4, r4, r2
 	sbc	r5, r5, r3
-.L57:
+.L87:
 	add	r8, r8, #1
 	cmp	r8, #64
 	mov	r2, #0
-	beq	.L97
-.L60:
+	beq	.L127
+.L90:
 	and	r3, r2, #1
 	cmp	r3, #0
-	beq	.L55
+	beq	.L85
 	adds	r6, r6, r4
 	ldr	r3, [sp, #52]
 	adc	r7, r7, r5
 	cmp	r3, r7
-	bhi	.L55
-	beq	.L98
-.L74:
+	bhi	.L85
+	beq	.L128
+.L104:
 	add	r2, sp, #48
 	ldmia	r2, {r1-r2}
 	subs	r6, r6, r1
 	sbc	r7, r7, r2
-.L55:
+.L85:
 	adds	r0, r4, r4
 	adc	r1, r5, r5
 	add	r3, sp, #48
@@ -499,41 +634,41 @@ montgomery_modular_exponentiation:
 	ldr	r2, [sp, #52]
 	mov	r5, r3
 	cmp	r2, r5
-	bhi	.L57
-	bne	.L75
+	bhi	.L87
+	bne	.L105
 	ldr	r3, [sp, #48]
 	cmp	r3, r4
-	bls	.L75
+	bls	.L105
 	add	r8, r8, #1
 	cmp	r8, #64
 	mov	r2, #0
-	bne	.L60
-.L97:
+	bne	.L90
+.L127:
 	mov	r1, r7
 	mov	r0, r6
 	add	sp, sp, #16
 	ldmfd	sp!, {r4, r5, r6, r7, r8, sl, fp, lr}
 	bx	lr
-.L95:
+.L125:
 	ldr	r2, [sp, #48]
 	cmp	r2, r4
-	bhi	.L49
-	b	.L71
-.L93:
+	bhi	.L79
+	b	.L101
+.L123:
 	ldr	r3, [sp, #48]
 	cmp	r3, r2
-	bhi	.L51
-	b	.L73
-.L98:
+	bhi	.L81
+	b	.L103
+.L128:
 	ldr	r0, [sp, #48]
 	cmp	r0, r6
-	bhi	.L55
-	b	.L74
-.L96:
+	bhi	.L85
+	b	.L104
+.L126:
 	ldr	r1, [sp, #48]
 	cmp	r1, r4
-	bhi	.L57
-	b	.L76
+	bhi	.L87
+	b	.L106
 	.size	montgomery_modular_exponentiation, .-montgomery_modular_exponentiation
 	.align	2
 	.global	RSA_encryption_decryption
@@ -567,19 +702,19 @@ RSA_encryption_decryption:
 	mov	r5, r0
 	bl	clock
 	mov	r4, r0
-	ldr	r0, .L101+8
+	ldr	r0, .L131+8
 	bl	puts
 	rsb	r4, sl, r4
 	mov	r2, r5
 	mov	r3, r6
-	ldr	r0, .L101+12
+	ldr	r0, .L131+12
 	bl	printf
 	fmsr	s15, r4	@ int
 	fsitod	d16, s15
-	fldd	d8, .L101
+	fldd	d8, .L131
 	fdivd	d17, d16, d8
 	fmrrd	r2, r3, d17
-	ldr	r0, .L101+16
+	ldr	r0, .L131+16
 	bl	printf
 	bl	clock
 	mov	r7, r0
@@ -597,21 +732,21 @@ RSA_encryption_decryption:
 	mov	r5, r0
 	bl	clock
 	mov	r4, r0
-	ldr	r0, .L101+20
+	ldr	r0, .L131+20
 	bl	puts
 	rsb	r4, r7, r4
 	mov	r2, r5
 	mov	r3, r6
-	ldr	r0, .L101+24
+	ldr	r0, .L131+24
 	bl	printf
 	fmsr	s15, r4	@ int
 	fsitod	d16, s15
 	fdivd	d17, d16, d8
 	fmrrd	r2, r3, d17
-	ldr	r0, .L101+28
+	ldr	r0, .L131+28
 	bl	printf
 	bl	rand
-	ldr	r3, .L101+32
+	ldr	r3, .L131+32
 	smull	r2, r1, r3, r0
 	mov	r2, r0, asr #31
 	rsb	r2, r2, r1, asr #1
@@ -624,9 +759,9 @@ RSA_encryption_decryption:
 	fldmfdd	sp!, {d8}
 	ldmfd	sp!, {r4, r5, r6, r7, r8, r9, sl, lr}
 	bx	lr
-.L102:
+.L132:
 	.align	3
-.L101:
+.L131:
 	.word	0
 	.word	1093567616
 	.word	.LC0
@@ -637,141 +772,6 @@ RSA_encryption_decryption:
 	.word	.LC5
 	.word	1717986919
 	.size	RSA_encryption_decryption, .-RSA_encryption_decryption
-	.align	2
-	.global	montgomery_modular_reduction
-	.type	montgomery_modular_reduction, %function
-montgomery_modular_reduction:
-	@ Function supports interworking.
-	@ args = 8, pretend = 0, frame = 0
-	@ frame_needed = 0, uses_anonymous_args = 0
-	stmfd	sp!, {r3, r4, r5, r6, r7, r8, r9, sl, fp, lr}
-	mov	r4, r0
-	mov	r5, r1
-	mov	r8, r2
-	mov	r9, r3
-	mov	r0, #1
-	mov	r6, #0
-	mov	r7, #0
-	mov	sl, #0
-	b	.L109
-.L118:
-	adds	r4, r4, r4
-	adc	r5, r5, r5
-	cmp	r9, r5
-	bhi	.L106
-	beq	.L127
-.L119:
-	subs	r4, r4, r8
-	sbc	r5, r5, r9
-.L106:
-	add	sl, sl, #1
-	cmp	sl, #64
-	mov	r0, #0
-	mov	r1, #0
-	beq	.L128
-.L109:
-	and	r3, r0, #1
-	cmp	r3, #0
-	beq	.L104
-	adds	r6, r6, r4
-	adc	r7, r7, r5
-	cmp	r9, r7
-	bhi	.L104
-	beq	.L129
-.L117:
-	subs	r6, r6, r8
-	sbc	r7, r7, r9
-.L104:
-	adds	r0, r4, r4
-	adc	r1, r5, r5
-	mov	r2, r8
-	mov	r3, r9
-	bl	__aeabi_uldivmod
-	cmp	r9, r3
-	mov	r4, r2
-	mov	r5, r3
-	bhi	.L106
-	bne	.L118
-	cmp	r8, r2
-	bls	.L118
-	add	sl, sl, #1
-	cmp	sl, #64
-	mov	r0, #0
-	mov	r1, #0
-	bne	.L109
-.L128:
-	mov	sl, r0
-	mov	fp, r1
-	mov	r3, #1
-	mov	r5, #0
-	b	.L115
-.L121:
-	adds	r6, r6, r6
-	adc	r7, r7, r7
-	cmp	r9, r7
-	bhi	.L112
-	beq	.L130
-.L122:
-	subs	r6, r6, r8
-	sbc	r7, r7, r9
-.L112:
-	add	r5, r5, #1
-	cmp	r5, #64
-	mov	r3, #0
-	mov	r4, #0
-	beq	.L131
-.L115:
-	and	r3, r3, #1
-	cmp	r3, #0
-	beq	.L110
-	adds	sl, sl, r6
-	adc	fp, fp, r7
-	cmp	r9, fp
-	bhi	.L110
-	beq	.L132
-.L120:
-	subs	sl, sl, r8
-	sbc	fp, fp, r9
-.L110:
-	adds	r0, r6, r6
-	adc	r1, r7, r7
-	mov	r2, r8
-	mov	r3, r9
-	bl	__aeabi_uldivmod
-	cmp	r9, r3
-	mov	r6, r2
-	mov	r7, r3
-	bhi	.L112
-	bne	.L121
-	cmp	r8, r2
-	bls	.L121
-	add	r5, r5, #1
-	cmp	r5, #64
-	mov	r3, #0
-	mov	r4, #0
-	bne	.L115
-.L131:
-	mov	r1, fp
-	mov	r0, sl
-	ldmfd	sp!, {r3, r4, r5, r6, r7, r8, r9, sl, fp, lr}
-	bx	lr
-.L129:
-	cmp	r8, r6
-	bhi	.L104
-	b	.L117
-.L127:
-	cmp	r8, r4
-	bhi	.L106
-	b	.L119
-.L132:
-	cmp	r8, sl
-	bhi	.L110
-	b	.L120
-.L130:
-	cmp	r8, r6
-	bhi	.L112
-	b	.L122
-	.size	montgomery_modular_reduction, .-montgomery_modular_reduction
 	.section	.rodata.str1.4,"aMS",%progbits,1
 	.align	2
 .LC0:
