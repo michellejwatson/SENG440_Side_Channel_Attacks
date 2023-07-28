@@ -44,51 +44,20 @@ int main() {
     // Public Key: (E, PQ)
     // Private Key: (D, PQ)
 
-    // Compute R = (2^m) % N
-    unsigned long long int R = 1;
-    int i;
-    for (i = 0; i < m; i++) {
-        R = (R << 1) % N;
-    }
-
-    // Compute Y = (R^2) % N
-    unsigned long long int Y = (R * R) % N;
-
-    // Perform RSA encryption
-    clock_t start_encrypt = clock();
-
-    unsigned long long int ciphertext = montgomery_modular_exponentiation(plaintext, E, N, Y, m);
-
-    clock_t end_encrypt = clock();
-    double total_time_encrypt = (double)(end_encrypt - start_encrypt) / CLOCKS_PER_SEC;
-
-    printf("********** RSA Encryption **********\n");
-    printf("RSA Encryption Ciphertext: %llu\n", ciphertext);
-    printf("Time to execute encrypt: %.7f\n", total_time_encrypt);
-
-    // Perform RSA decryption
-    clock_t start_decrypt = clock();
-
-    unsigned long long int decrypted = montgomery_modular_exponentiation(ciphertext, D, N, Y, m);
-
-    clock_t end_decrypt = clock();
-    double total_time_decrypt = (double)(end_decrypt - start_decrypt) / CLOCKS_PER_SEC;
-
-    printf("********** RSA Decryption **********\n");
-    printf("Decrypted: %llu\n", decrypted);
-    printf("Time to execute decrypt: %.7f\n", total_time_decrypt);
+    RSA_encryption_decryption(plaintext, E, N, D, m);
 
 
 
 
-    test_side_channel(plaintext, P, Q, E);
 
-    printf("********** Test Addition **********\n");
+    // test_side_channel(plaintext, P, Q, E);
 
-    test_montgomery_addition(P, Q, N);
+    // printf("********** Test Addition **********\n");
 
-    printf("********** Test Multiplication **********\n");
+    // test_montgomery_addition(P, Q, N);
 
-    test_montgomery_multiplication();
+    // printf("********** Test Multiplication **********\n");
+
+    // test_montgomery_multiplication();
     return 0;
 }
