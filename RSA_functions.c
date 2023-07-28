@@ -111,7 +111,7 @@ void RSA_encryption_decryption(unsigned long long int plaintext, unsigned long l
     printf("Decrypted: %llu\n", decrypted);
     printf("Time to execute decrypt: %.7f\n", total_time_decrypt);
 
-    // Introduce Masking (andom delay of 1 to 5 seconds)
+    // Introduce Masking (random delay of 1 to 5 seconds)
     int delay_seconds = rand() % 5 + 1;
     sleep(delay_seconds);
 }
