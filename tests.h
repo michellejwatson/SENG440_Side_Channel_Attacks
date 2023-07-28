@@ -9,9 +9,6 @@
 // or maybe clock isn't fine enough to get the difference, and we should run it a bunch of times?
 int test_montgomery_addition(unsigned long a, unsigned long long int b, unsigned long long int modulus);
 
-
-
-
 /**
 * gets time required for Montgomery modular multiplication for 64-bit word.
 * Parameters:
@@ -43,3 +40,6 @@ double find_baseline_decryption_time(unsigned long long int ciphertext, unsigned
 
 // big long test to see if over all works.
 int test_side_channel(unsigned long long int plaintext, unsigned long long int prime_num_1, unsigned long long int prime_num_2, unsigned long long int public_exponent);
+
+// Test program can encrypt and decrypt successfully.
+int test_encrypt_decrypt(unsigned long long int plaintext, unsigned long long int modulus, unsigned long long int public_exponent, unsigned long long int private_exponent, unsigned long long int montgomery_factor);

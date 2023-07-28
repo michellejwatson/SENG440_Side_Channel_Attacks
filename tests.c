@@ -231,3 +231,35 @@ int test_side_channel(unsigned long long int plaintext, unsigned long long int p
 
     return 0;
 }
+
+/**
+ * Verifies program can encrypt and decrypt plaintext
+ * Parameters:
+ *  - plaintext: to be encrypted
+ *  - modulus: shared portion of public and private key. Used for encryption and decryption
+ *  - public_exponent: second part of public key, used to encrypt message
+ *  - private_exponent: second part of private key, used to decrypt message
+ *  - montgomery_factor: TODO: check needed.
+*/
+int test_encrypt_decrypt(unsigned long long int plaintext, unsigned long long int modulus, unsigned long long int public_exponent, unsigned long long int private_exponent, unsigned long long int montgomery_factor) {
+    unsigned long long int m = 64; // 64 bit expected -> TODO: is this always hardcoded?
+
+    // Perform RSA encryption
+    unsigned long long int ciphertext = montgomery_modular_exponentiation(plaintext, public_exponent, modulus, montgomery_factor, m);
+    
+    printf("********** RSA Encryption **********\n");
+    printf("RSA Encryption Ciphertext: %llu\n", ciphertext);
+
+    // Perform RSA decryption
+    unsigned long long int decrypted = montgomery_modular_exponentiation(ciphertext, private_exponent, modulus, montgomery_factor, m);
+
+    printf("********** RSA Decryption **********\n");
+    printf("Decrypted: %llu\n", decrypted);
+
+    // check encryption worked
+    assert(ciphertext != plaintext);
+    // check decryption worked
+    assert(decrypted == plaintext);
+    
+    return 0;
+}
