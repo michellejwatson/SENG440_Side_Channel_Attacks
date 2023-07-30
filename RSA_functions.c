@@ -11,11 +11,11 @@
 // to help with overflow
 unsigned long long int montgomery_add(unsigned long long int a, unsigned long long int b, unsigned long long int modulus) {
     unsigned long long int sum = a + b;
-    unsigned long long int dummy = 0;
+    unsigned long long int dummy[0];
     if (sum >= modulus){
         sum -= modulus;
     } else {
-        dummy -= modulus;
+        dummy[0] -= modulus;
     }
     return sum;
 }
