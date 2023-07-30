@@ -40,9 +40,9 @@ struct returnValue montgomery_multiplication(unsigned long long int a, unsigned 
     a_plus.dummy = a;
     result.real = 0;
     result.dummy = 0;
-    int i;
+    int i = 0;
 
-    for (i = 0; i < 64; i++) { //modulus instead of static?
+    while ( i < 64) { //modulus instead of static?
         if (b % 2 == 1)
         {
             catcher = montgomery_add(result.real, a_plus.real, modulus);
@@ -62,6 +62,7 @@ struct returnValue montgomery_multiplication(unsigned long long int a, unsigned 
             catcher = montgomery_add(a_plus.real, a_plus.real, modulus);
             a_plus.dummy = catcher.real;
         }
+        i++;
     }
 
     return result;
