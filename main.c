@@ -86,12 +86,12 @@ int main() {
     D = generate_private_exponent(P, Q, E);
 
     // test baseline functionality of program works
-    test_encrypt_decrypt(plaintext, N, E, D, m);
+    // test_encrypt_decrypt(plaintext, N, E, D, m);
 
-    // Public Key: (E, PQ)
-    // Private Key: (D, PQ)
+    // // Public Key: (E, PQ)
+    // // Private Key: (D, PQ)
 
-    RSA_encryption_decryption(plaintext, E, N, D, m);
+    // RSA_encryption_decryption(plaintext, E, N, D, m);
 
 
 
