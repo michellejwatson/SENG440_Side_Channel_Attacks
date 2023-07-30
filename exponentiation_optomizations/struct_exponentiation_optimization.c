@@ -97,7 +97,6 @@ unsigned long long int montgomery_modular_reduction(unsigned long long int resul
 */
 struct returnValue montgomery_modular_exponentiation(unsigned long long int base, unsigned long long int exponent, unsigned long long int modulus, unsigned long long int m) {
     unsigned long long int result = 1;
-    unsigned long long int R = 1;
     unsigned long long int baseMont = montgomery_multiplication(base, R, modulus).real;
     unsigned long long int dummy = 0;
     register int i;
