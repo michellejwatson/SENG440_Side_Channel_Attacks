@@ -33,18 +33,30 @@ struct returnValue montgomery_add(unsigned long long int a, unsigned long long i
 */
 struct returnValue montgomery_multiplication(unsigned long long int a, unsigned long long int b, unsigned long long int modulus) {
     struct returnValue result;
+    struct returnValue catcher;
     result.real = 0;
+    result.dummy = 0;
     int i;
 
     for (i = 0; i < 64; i++) { //modulus instead of static?
-        if (b % 2 == 1) result = montgomery_add(result.real, a, modulus);
+        if (b % 2 == 1)
+        {
+            catcher = montgomery_add(result.real, a, modulus);
+            result.real = catcher.real;
+        } else {
+            catcher = montgomery_add(result.dummy, a, modulus);
+            result.dummy = catcher.dummy;
+        }
 
         a = (a << 1) % modulus;
         b = b >> 1;
 
         if (a >= modulus){
-            struct returnValue newA = montgomery_add(a, a, modulus);
-            a = newA.real;
+            catcher = montgomery_add(a, a, modulus);
+            a = catcher.real;
+        } else {
+            catcher = montgomery_add(a, a, modulus);
+            result.dummy = catcher.dummy;
         }
     }
 
