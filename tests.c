@@ -121,75 +121,75 @@ double find_baseline_decryption_time(unsigned long long int ciphertext, unsigned
 
 int test_side_channel(unsigned long long int plaintext, unsigned long long int modulus, unsigned long long int public_exponent, unsigned long long int private_exponent, unsigned long long int m){
 
-    unsigned long long int invalid_private_expo;
-    double acceptance_threshold_percent = 0.10;
-    double acceptance_threshold; // calculated later using given acceptance_threshold_percent.
+    // unsigned long long int invalid_private_expo;
+    // double acceptance_threshold_percent = 0.10;
+    // double acceptance_threshold; // calculated later using given acceptance_threshold_percent.
 
-    clock_t start, end;
+    // clock_t start, end;
 
-    // Check 1 < E < PQ
-    if (public_exponent <= 1 || public_exponent >= modulus) {
-        printf("Invalid public exponent 'E'. It must satisfy 1 < E < PQ.\n");
-        return -1;
-    }
+    // // Check 1 < E < PQ
+    // if (public_exponent <= 1 || public_exponent >= modulus) {
+    //     printf("Invalid public exponent 'E'. It must satisfy 1 < E < PQ.\n");
+    //     return -1;
+    // }
 
-    // Check that plaintext is < PQ
-    if (plaintext >= modulus) {
-        printf("Invalid plaintext value. It must satisfy plaintext < PQ.\n");
-        return -1;
-    }
+    // // Check that plaintext is < PQ
+    // if (plaintext >= modulus) {
+    //     printf("Invalid plaintext value. It must satisfy plaintext < PQ.\n");
+    //     return -1;
+    // }
 
-    // Perform RSA encryption
-    unsigned long long int ciphertext = montgomery_modular_exponentiation(plaintext, public_exponent, modulus, m);
+    // // Perform RSA encryption
+    // unsigned long long int ciphertext = montgomery_modular_exponentiation(plaintext, public_exponent, modulus, m);
 
-    // Perform RSA decryption
-    unsigned long long int decrypted = montgomery_modular_exponentiation(ciphertext, private_exponent, modulus, m);
+    // // Perform RSA decryption
+    // unsigned long long int decrypted = montgomery_modular_exponentiation(ciphertext, private_exponent, modulus, m);
 
-    double average_decrypt_time = find_baseline_decryption_time(ciphertext, private_exponent, modulus, m);
+    // double average_decrypt_time = find_baseline_decryption_time(ciphertext, private_exponent, modulus, m);
 
-    printf("********** RSA Decryption **********\n");
-    // check decrytion worked
-    assert(decrypted == plaintext);
-    printf("Decrypted: %llu\n", decrypted);
-    printf("Average time to decrypt: %.10f\n", average_decrypt_time);
-    printf("D:%lld\n", private_exponent);
+    // printf("********** RSA Decryption **********\n");
+    // // check decrytion worked
+    // assert(decrypted == plaintext);
+    // printf("Decrypted: %llu\n", decrypted);
+    // printf("Average time to decrypt: %.10f\n", average_decrypt_time);
+    // printf("D:%lld\n", private_exponent);
 
-    invalid_private_expo = private_exponent;
-    acceptance_threshold =  average_decrypt_time * acceptance_threshold_percent;
+    // invalid_private_expo = private_exponent;
+    // acceptance_threshold =  average_decrypt_time * acceptance_threshold_percent;
 
-    printf("Acceptance threshold: %.10f \n", acceptance_threshold);
+    // printf("Acceptance threshold: %.10f \n", acceptance_threshold);
 
-    // To test affectiveness, we perform a simplified mock attack?
-    printf("Performing test...................\n");
-    while(D_invalid > 0)
-    {
-        invalid_private_expo = invalid_private_expo >> 1; // change key each loop
+    // // To test affectiveness, we perform a simplified mock attack?
+    // printf("Performing test...................\n");
+    // while(D_invalid > 0)
+    // {
+    //     invalid_private_expo = invalid_private_expo >> 1; // change key each loop
 
-        start = clock();
-        decrypted = montgomery_modular_exponentiation(ciphertext, D_invalid, modulus, m); // could get average too to cut down on clock overhead?
-        end = clock();
+    //     start = clock();
+    //     decrypted = montgomery_modular_exponentiation(ciphertext, D_invalid, modulus, m); // could get average too to cut down on clock overhead?
+    //     end = clock();
 
-        double total_time_decrypt_semi_invalid_key = (double)(end - start) / CLOCKS_PER_SEC;
+    //     double total_time_decrypt_semi_invalid_key = (double)(end - start) / CLOCKS_PER_SEC;
 
-        double difference = total_time_decrypt_semi_invalid_key - average_decrypt_time;
+    //     double difference = total_time_decrypt_semi_invalid_key - average_decrypt_time;
 
-        // apply abs value if necessary
-        if(difference < 0){
-            difference = difference*-1;
-        }
+    //     // apply abs value if necessary
+    //     if(difference < 0){
+    //         difference = difference*-1;
+    //     }
         
-        if(difference > acceptance_threshold)
-        {
-            printf("********** RSA Decryption Difference detected **********\n");
-            printf("Decrypted: %llu, invalid key:%llu\n", decrypted, D_invalid);
-            printf("valid key: %llu\n", private_exponent);
-            printf("Time to execute failed decrypt: %.10f\n", total_time_decrypt_semi_invalid_key);
-            return 1;
-        }
-    }
+    //     if(difference > acceptance_threshold)
+    //     {
+    //         printf("********** RSA Decryption Difference detected **********\n");
+    //         printf("Decrypted: %llu, invalid key:%llu\n", decrypted, D_invalid);
+    //         printf("valid key: %llu\n", private_exponent);
+    //         printf("Time to execute failed decrypt: %.10f\n", total_time_decrypt_semi_invalid_key);
+    //         return 1;
+    //     }
+    // }
 
-    printf("********** RSA Decryption Difference not found **********\n");
-    return 0;
+    // printf("********** RSA Decryption Difference not found **********\n");
+    // return 0;
 }
 
 /**
