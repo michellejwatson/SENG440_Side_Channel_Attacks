@@ -7,12 +7,18 @@
 #include <stdlib.h>
 #include <unistd.h>
 
+
 // Helper function to perform modular addition
 // to help with overflow
-unsigned long long int montgomery_add(unsigned long long int a, unsigned long long int b, unsigned long long int modulus) {
-    unsigned long long int sum = a + b;
-    if (sum >= modulus){
-        sum -= modulus;
+struct returnValue montgomery_add(unsigned long long int a, unsigned long long int b, unsigned long long int modulus) {
+    struct returnValue sum;
+    sum.real = a + b;
+    sum.dummy = sum.real;
+
+    if (sum.real >= modulus){
+        sum.real -= modulus;
+    } else {
+        sum.dummy -= modulus;
     }
     return sum;
 }
@@ -25,17 +31,38 @@ unsigned long long int montgomery_add(unsigned long long int a, unsigned long lo
 * - modulus: The modulus.
 * Returns: The result of the multiplication.
 */
-unsigned long long int montgomery_multiplication(unsigned long long int a, unsigned long long int b, unsigned long long int modulus) {
-    unsigned long long int result = 0;
-    int i;
+struct returnValue montgomery_multiplication(unsigned long long int a, unsigned long long int b, unsigned long long int modulus) {
+    struct returnValue result;
+    struct returnValue catcher;
+    struct returnValue a_plus;
 
-    for (i = 0; i < 64; i++) { //modulus instead of static?
-        if (b % 2 == 1) result = montgomery_add(result, a, modulus);
+    a_plus.real = a;
+    a_plus.dummy = a;
+    result.real = 0;
+    result.dummy = 0;
+    int i = 0;
 
-        a = (a << 1) % modulus;
+    while ( i < 64) { //modulus instead of static?
+        if (b % 2 == 1)
+        {
+            catcher = montgomery_add(result.real, a_plus.real, modulus);
+            result.real = catcher.real;
+        } else {
+            catcher = montgomery_add(result.dummy, a_plus.real, modulus);
+            result.dummy = catcher.dummy;
+        }
+
+        a_plus.real = (a_plus.real << 1) % modulus;
         b = b >> 1;
 
-        if (a >= modulus) a = montgomery_add(a, a, modulus);
+        if (a_plus.real >= modulus){
+            catcher = montgomery_add(a_plus.real, a_plus.real, modulus);
+            a_plus.real = catcher.real;
+        } else {
+            catcher = montgomery_add(a_plus.real, a_plus.real, modulus);
+            a_plus.dummy = catcher.real;
+        }
+        i++;
     }
 
     return result;
@@ -51,9 +78,10 @@ unsigned long long int montgomery_multiplication(unsigned long long int a, unsig
 */
 unsigned long long int montgomery_modular_reduction(unsigned long long int result, unsigned long long int modulus, unsigned long long int m) {
     unsigned long long int R_inverse = 1;
-    unsigned long long int montgomery_result = montgomery_multiplication(result, 1, modulus); // Convert the result to Montgomery form
-
-    unsigned long long int reduced_result = montgomery_multiplication(montgomery_result, R_inverse, modulus); // Perform the Montgomery reduction
+    struct returnValue fromMult = montgomery_multiplication(result, 1, modulus); // Convert the result to Montgomery form
+    unsigned long long int montgomery_result = fromMult.real;
+    fromMult = montgomery_multiplication(montgomery_result, R_inverse, modulus); // Perform the Montgomery reduction
+    unsigned long long int reduced_result = fromMult.real;
 
     return reduced_result;
 }
@@ -70,14 +98,15 @@ unsigned long long int montgomery_modular_reduction(unsigned long long int resul
 unsigned long long int montgomery_modular_exponentiation(unsigned long long int base, unsigned long long int exponent, unsigned long long int modulus, unsigned long long int m) {
     unsigned long long int result = 1;
     unsigned long long int R = 1;
-    unsigned long long int baseMont = montgomery_multiplication(base, R, modulus); // R is the Montgomery factor
-
+    struct returnValue fromMult = montgomery_multiplication(base, R, modulus); // R is the Montgomery factor
+    unsigned long long int baseMont = fromMult.real;
     while (exponent > 0) {
         if (exponent & 1) {
-            result = montgomery_multiplication(result, baseMont, modulus);
+            fromMult= montgomery_multiplication(result, baseMont, modulus);
+            result = fromMult.real;
         }
-
-        baseMont = montgomery_multiplication(baseMont, baseMont, modulus);
+        fromMult = montgomery_multiplication(baseMont, baseMont, modulus);
+        baseMont = fromMult.real;
         exponent >>= 1;
     }
 

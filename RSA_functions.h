@@ -4,10 +4,15 @@
 #include <stdio.h>
 #include <stdint.h>
 
-unsigned long long int montgomery_add(unsigned long long int a, unsigned long long int b, unsigned long long int modulus);
+struct returnValue {
+    unsigned long long int real;
+    unsigned long long int dummy;
+};
+
+struct returnValue montgomery_add(unsigned long long int a, unsigned long long int b, unsigned long long int modulus);
 
 /** Performs Montgomery modular multiplication **/
-unsigned long long int montgomery_multiplication(unsigned long long int a, unsigned long long int b, unsigned long long int modulus);
+struct returnValue montgomery_multiplication(unsigned long long int a, unsigned long long int b, unsigned long long int modulus);
 
 /** Performs Montgomery modular reduction **/
 unsigned long long int montgomery_modular_reduction(unsigned long long int result, unsigned long long int modulus, unsigned long long int m);
