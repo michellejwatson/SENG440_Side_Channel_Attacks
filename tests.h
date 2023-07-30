@@ -36,7 +36,7 @@ void test_montgomery_modular_exponentiation();
 * - m: The number of bits.
 * Returns: The average time to perform the decryption
 */
-double find_baseline_decryption_time(unsigned long long int ciphertext, unsigned long long int D, unsigned long long int N, unsigned long long int Y, unsigned long long int m);
+double find_baseline_decryption_time(unsigned long long int ciphertext, unsigned long long int D, unsigned long long int N, unsigned long long int m);
 
 // big long test to see if over all works.
 int test_side_channel(unsigned long long int plaintext, unsigned long long int prime_num_1, unsigned long long int prime_num_2, unsigned long long int public_exponent);

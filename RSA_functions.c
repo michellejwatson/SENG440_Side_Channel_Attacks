@@ -46,7 +46,6 @@ unsigned long long int montgomery_multiplication(unsigned long long int a, unsig
 * Parameters:
 * - result: The result of the modular exponentiation.
 * - modulus: The modulus.
-* - Y: The Montgomery factor.
 * - m: The number of bits.
 * Returns: The reduced result after Montgomery modular reduction.
 */
@@ -65,7 +64,6 @@ unsigned long long int montgomery_modular_reduction(unsigned long long int resul
 * - base: The base value.
 * - exponent: The exponent value.
 * - modulus: The modulus.
-* - Y: The Montgomery factor.
 * - m: The number of bits.
 * Returns: The result of the modular exponentiation.
 */
