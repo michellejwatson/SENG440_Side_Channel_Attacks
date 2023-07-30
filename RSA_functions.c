@@ -34,6 +34,10 @@ struct returnValue montgomery_add(unsigned long long int a, unsigned long long i
 struct returnValue montgomery_multiplication(unsigned long long int a, unsigned long long int b, unsigned long long int modulus) {
     struct returnValue result;
     struct returnValue catcher;
+    struct returnValue a_plus;
+
+    a_plus.real = a;
+    a_plus.dummy = a;
     result.real = 0;
     result.dummy = 0;
     int i;
@@ -41,22 +45,22 @@ struct returnValue montgomery_multiplication(unsigned long long int a, unsigned 
     for (i = 0; i < 64; i++) { //modulus instead of static?
         if (b % 2 == 1)
         {
-            catcher = montgomery_add(result.real, a, modulus);
+            catcher = montgomery_add(result.real, a_plus.real, modulus);
             result.real = catcher.real;
         } else {
-            catcher = montgomery_add(result.dummy, a, modulus);
+            catcher = montgomery_add(result.dummy, a_plus.real, modulus);
             result.dummy = catcher.dummy;
         }
 
-        a = (a << 1) % modulus;
+        a_plus.real = (a_plus.real << 1) % modulus;
         b = b >> 1;
 
-        if (a >= modulus){
-            catcher = montgomery_add(a, a, modulus);
-            a = catcher.real;
+        if (a_plus.real >= modulus){
+            catcher = montgomery_add(a_plus.real, a_plus.real, modulus);
+            a_plus.real = catcher.real;
         } else {
-            catcher = montgomery_add(a, a, modulus);
-            result.dummy = catcher.dummy;
+            catcher = montgomery_add(a_plus.real, a_plus.real, modulus);
+            a_plus.dummy = catcher.real;
         }
     }
 
