@@ -33,26 +33,27 @@ unsigned long long int generate_private_exponent(unsigned long long int prime_1,
     return private_exponent;
 }
 
-/**
-* Calculates montgomery factor needed for encryption/decryption
-* Parameters:
-* - N: modulus
-* - m: number of bits
-* Returns: associated Montgomery Factor.
-*/
-unsigned long long int calculate_montgomery_factor(unsigned long long int N, unsigned long long int m){
+// Dead code
+// /**
+// * Calculates montgomery factor needed for encryption/decryption
+// * Parameters:
+// * - N: modulus
+// * - m: number of bits
+// * Returns: associated Montgomery Factor.
+// */
+// unsigned long long int calculate_montgomery_factor(unsigned long long int N, unsigned long long int m){
 
-    // Compute R = (2^m) % N
-    unsigned long long int R = 1;
-    int i;
-    for (i = 0; i < m; i++) {
-        R = (R << 1) % N;
-    }
+//     // Compute R = (2^m) % N
+//     unsigned long long int R = 1;
+//     int i;
+//     for (i = 0; i < m; i++) {
+//         R = (R << 1) % N;
+//     }
 
-    // Compute Montgomery Factor: Y = (R^2) % N
-    unsigned long long int Y = (R * R) % N;
-    return Y;
-}
+//     // Compute Montgomery Factor: Y = (R^2) % N
+//     unsigned long long int Y = (R * R) % N;
+//     return Y;
+// }
 
 int main() {
     /** initial test **/
@@ -83,11 +84,9 @@ int main() {
 
     // Calculate required values
     D = generate_private_exponent(P, Q, E);
-    montgomery_factor = calculate_montgomery_factor(N, m);
 
     // test baseline functionality of program works
-    test_encrypt_decrypt(plaintext, N, E, D, montgomery_factor);
-    D = ((X * phi) + 1) / E;
+    test_encrypt_decrypt(plaintext, N, E, D, m);
 
     // Public Key: (E, PQ)
     // Private Key: (D, PQ)
