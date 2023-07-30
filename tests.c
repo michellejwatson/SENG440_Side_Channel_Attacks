@@ -111,7 +111,7 @@ double find_baseline_decryption_time(unsigned long long int ciphertext, unsigned
     for(i = 0; i < num_loops; i++)
     {
         start_decrypt = clock();
-        decrypted = montgomery_modular_exponentiation(ciphertext, D, N, m);
+        decrypted = montgomery_modular_exponentiation(ciphertext, D, N, m).real;
         end_decrypt = clock();
         total_time += (double)(end_decrypt - start_decrypt);
     }
@@ -169,11 +169,11 @@ int test_side_channel(unsigned long long int plaintext, unsigned long long int p
     //clock_t start = clock();
 
     // Perform RSA encryption
-    unsigned long long int ciphertext = montgomery_modular_exponentiation(plaintext, public_exponent, modulus, m);
+    unsigned long long int ciphertext = montgomery_modular_exponentiation(plaintext, public_exponent, modulus, m).real;
 
     // Perform RSA decryption
     start = clock();
-    unsigned long long int decrypted = montgomery_modular_exponentiation(ciphertext, private_exponent, modulus, m);
+    unsigned long long int decrypted = montgomery_modular_exponentiation(ciphertext, private_exponent, modulus, m).real;
     end = clock();
     double once_around = (double)(end - start) / CLOCKS_PER_SEC;
 
@@ -199,7 +199,7 @@ int test_side_channel(unsigned long long int plaintext, unsigned long long int p
 
         start = clock();
 
-        decrypted = montgomery_modular_exponentiation(ciphertext, D_invalid, modulus, m);
+        decrypted = montgomery_modular_exponentiation(ciphertext, D_invalid, modulus, m).real;
         end = clock();
 
         double total_time_decrypt_semi_invalid_key = (double)(end - start) / CLOCKS_PER_SEC;
@@ -245,13 +245,13 @@ int test_encrypt_decrypt(unsigned long long int plaintext, unsigned long long in
     unsigned long long int m = 64; // 64 bit expected -> TODO: is this always hardcoded?
 
     // Perform RSA encryption
-    unsigned long long int ciphertext = montgomery_modular_exponentiation(plaintext, public_exponent, modulus, m);
+    unsigned long long int ciphertext = montgomery_modular_exponentiation(plaintext, public_exponent, modulus, m).real;
     
     printf("********** RSA Encryption **********\n");
     printf("RSA Encryption Ciphertext: %llu\n", ciphertext);
 
     // Perform RSA decryption
-    unsigned long long int decrypted = montgomery_modular_exponentiation(ciphertext, private_exponent, modulus, m);
+    unsigned long long int decrypted = montgomery_modular_exponentiation(ciphertext, private_exponent, modulus, m).real;
 
     printf("********** RSA Decryption **********\n");
     printf("Decrypted: %llu\n", decrypted);

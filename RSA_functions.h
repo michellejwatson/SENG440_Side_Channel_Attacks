@@ -18,7 +18,7 @@ struct returnValue montgomery_multiplication(unsigned long long int a, unsigned 
 unsigned long long int montgomery_modular_reduction(unsigned long long int result, unsigned long long int modulus, unsigned long long int m);
 
 /** Performs Montgomery modular exponentiatio **/
-unsigned long long int montgomery_modular_exponentiation(unsigned long long int base, unsigned long long int exponent, unsigned long long int modulus, unsigned long long int m);
+struct returnValue montgomery_modular_exponentiation(unsigned long long int base, unsigned long long int exponent, unsigned long long int modulus, unsigned long long int m);
 
 /** Performs full RSA encryption and decryption **/
 void RSA_encryption_decryption(unsigned long long int base, unsigned long long int exponent, unsigned long long int N, unsigned long long int D, unsigned long long int m);
