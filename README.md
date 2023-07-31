@@ -8,7 +8,8 @@ This project aims to remove the ability to perform side-channel attacks on a Riv
 - RSA_functions.s: Final assembly code version of RSA_functions.c which includes the hiding and masking through c code and manual hiding 
 - Test files: tests.c / tests.h. The test functions contained in tests.c performs a variety of tests on the different components of the algorithm and was used for validation throughout the development process.
 - unbalance_functions.c: an archive of initial implementation of RSA_functions.c pre-optimizations 
-- Exponentiation_optimizations: folder with c code and assembly code for each version of the implementation of hiding to the montgomery_modular_exponentiation function 
+- Exponentiation_optimizations: folder with archive versions of c and assembly code for each version of the implementation of hiding to the montgomery_modular_exponentiation function
+- Add_and_mult_optimization: folder with archive versions of c and assembly code for implementations of hiding in montgomery_multiplication and montgomery_add functions 
 
 ## ARM PROCESSOR
 The processor used for this project is the real 32-bit ARM processor that is access remotely through telnet arm with the ssh @seng440.ece.uvic.ca. 
