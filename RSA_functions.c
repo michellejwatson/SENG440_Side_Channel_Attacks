@@ -121,32 +121,36 @@ struct returnValue montgomery_modular_exponentiation(unsigned long long int base
     return final_result; // Montgomery reduction after exponentiation
 }
 
+void delay_milliseconds(int milliseconds) {
+    clock_t start_time = clock();
+    while ((clock() - start_time) * 1000 / CLOCKS_PER_SEC < milliseconds) {
+        // Do nothing, just keep looping
+    }
+}
+
 void RSA_encryption_decryption(unsigned long long int plaintext, unsigned long long int E, unsigned long long int N, unsigned long long int D, unsigned long long int m){
+    clock_t start_total = clock();
+
     // Perform RSA encryption
-    clock_t start_encrypt = clock();
-
-    unsigned long long int ciphertext = montgomery_modular_exponentiation(plaintext, E, N, m).real;
-
-    clock_t end_encrypt = clock();
-    double total_time_encrypt = (double)(end_encrypt - start_encrypt) / CLOCKS_PER_SEC;
+    register int i;
+    unsigned long long int ciphertext = montgomery_modular_exponentiation(plaintext, E, N, m).real; 
 
     printf("********** RSA Encryption **********\n");
     printf("RSA Encryption Ciphertext: %llu\n", ciphertext);
-    printf("Time to execute encrypt: %.7f\n", total_time_encrypt);
 
     // Perform RSA decryption
-    clock_t start_decrypt = clock();
-
     unsigned long long int decrypted = montgomery_modular_exponentiation(ciphertext, D, N, m).real;
-
-    clock_t end_decrypt = clock();
-    double total_time_decrypt = (double)(end_decrypt - start_decrypt) / CLOCKS_PER_SEC;
 
     printf("********** RSA Decryption **********\n");
     printf("Decrypted: %llu\n", decrypted);
-    printf("Time to execute decrypt: %.7f\n", total_time_decrypt);
 
-    // Introduce Masking (andom delay of 1 to 5 seconds)
-    int delay_seconds = rand() % 5 + 1;
-    sleep(delay_seconds);
+    // Introduce Masking (Random delay of 10 to 50 milliseconds)
+    srand(time(NULL));
+    int delay = rand() % 41 + 10;
+    delay_milliseconds(delay);
+
+    printf("********** Total **********\n");
+    clock_t end_total = clock();
+    double total_time = (double)(end_total - start_total) / CLOCKS_PER_SEC;
+    printf("Total Time to Execute Encrypt and Decrypt: %.7f (s)\n", total_time);
 }
