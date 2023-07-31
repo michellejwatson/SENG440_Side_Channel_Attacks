@@ -1,4 +1,5 @@
 # SENG440_Side_Channel_Attacks
+This project aims to remove the ability to perform side-channel attacks on a Rivest, Shamir, and Adleman (RSA) cryptography algorithm in embedded systems by regularizing the execution time and power consumption. The implementation of the RSA algorithm in C uses modular exponentiation and Montgomery modular multiplication. To defend against these attacks, hiding and masking techniques are used.
 
 ## CODE ORGANIZATION 
 copy from report when done
