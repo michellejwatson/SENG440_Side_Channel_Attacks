@@ -77,7 +77,7 @@ montgomery_add:
 	ldr     r3, [fp, #12]
         ldr     r4, [fp, #-36]
         cmp     r3, r4
-        mov     r4, r4
+        add     r4, r4, #0
         ldr     r3, [fp, #12]
         ldr     r2, [fp, #-36]
         cmp     r3, r2
@@ -94,11 +94,11 @@ montgomery_add:
 	ldr     r3, [fp, #16]
         ldr     r2, [fp, #-32]
         cmp     r3, r2
-        mov     r4, r4
+        add     r4, r4, #0
         ldr     r3, [fp, #12]
         ldr     r4, [fp, #-36]
         cmp     r3, r4
-        mov     r4, r4
+        add     r4, r4, #0
         ldr     r3, [fp, #12]
         ldr     r2, [fp, #-36]
         cmp     r3, r2
