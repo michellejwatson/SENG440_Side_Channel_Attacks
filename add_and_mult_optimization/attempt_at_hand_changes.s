@@ -54,6 +54,7 @@ montgomery_add:
 	ldr	r3, [fp, #12]
 	ldr	r2, [fp, #-36]
 	cmp	r3, r2
+	b .L6
 ONE_MORE_COMPARE_L6:
 	ldr	r5, [fp, #12]
 	ldr	r6, [fp, #-36]
