@@ -133,27 +133,24 @@ void RSA_encryption_decryption(unsigned long long int plaintext, unsigned long l
 
     // Perform RSA encryption
     register int i;
-    for (i = 0; i < 100; i++){
-        unsigned long long int ciphertext = montgomery_modular_exponentiation(plaintext, E, N, m).real; 
+    unsigned long long int ciphertext = montgomery_modular_exponentiation(plaintext, E, N, m).real; 
 
-        printf("********** RSA Encryption **********\n");
-        printf("RSA Encryption Ciphertext: %llu\n", ciphertext);
+    printf("********** RSA Encryption **********\n");
+    printf("RSA Encryption Ciphertext: %llu\n", ciphertext);
 
-        // Perform RSA decryption
-        unsigned long long int decrypted = montgomery_modular_exponentiation(ciphertext, D, N, m).real;
+    // Perform RSA decryption
+    unsigned long long int decrypted = montgomery_modular_exponentiation(ciphertext, D, N, m).real;
 
-        printf("********** RSA Decryption **********\n");
-        printf("Decrypted: %llu\n", decrypted);
-    }
+    printf("********** RSA Decryption **********\n");
+    printf("Decrypted: %llu\n", decrypted);
 
     // Introduce Masking (Random delay of 10 to 50 milliseconds)
     srand(time(NULL));
-    int delay = rand() % 50 + 10;
+    int delay = rand() % 41 + 10;
     delay_milliseconds(delay);
 
     printf("********** Total **********\n");
     clock_t end_total = clock();
     double total_time = (double)(end_total - start_total) / CLOCKS_PER_SEC;
-    printf("masking value: %d\n", delay);
     printf("Total Time to Execute Encrypt and Decrypt: %.7f (s)\n", total_time);
 }
