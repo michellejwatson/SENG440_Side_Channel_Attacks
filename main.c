@@ -96,7 +96,7 @@ int main() {
 
 
     // EXTRA TESTS ------------------------------------------------------------------
-    // test_side_channel(plaintext, P, Q, E);
+    test_side_channel(plaintext, N, E, D, m);
 
     // printf("********** Test Addition **********\n");
 

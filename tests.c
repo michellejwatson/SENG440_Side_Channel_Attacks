@@ -116,55 +116,21 @@ double find_baseline_decryption_time(unsigned long long int ciphertext, unsigned
         total_time += (double)(end_decrypt - start_decrypt);
     }
 
-    total_time = (double)(total_time) / CLOCKS_PER_SEC; // >> do a shift instead to optimize a little better
+    total_time = (double)(total_time) / CLOCKS_PER_SEC;
     double average_time = total_time/num_loops;
     return average_time;
 }
 
-int test_side_channel(unsigned long long int plaintext, unsigned long long int prime_num_1, unsigned long long int prime_num_2, unsigned long long int public_exponent){
+int test_side_channel(unsigned long long int plaintext, unsigned long long int modulus, unsigned long long int public_exponent, unsigned long long int private_exponent, unsigned long long int m){
 
-    unsigned long long int modulus = prime_num_1 * prime_num_2; // Modulus N
-    unsigned long long int phi = (prime_num_1 - 1) * (prime_num_2 - 1); // Euler's totient function value
-    unsigned long long int m = 64; // 64 bit expected
-    unsigned long long int private_exponent;
-    unsigned long long int D_invalid;
+    unsigned long long int invalid_private_exponant;
     double acceptance_threshold_percent = 0.10;
     double acceptance_threshold; // calculated later using given acceptance_threshold_percent.
 
     clock_t start, end;
 
-    // Check 1 < E < PQ
-    if (public_exponent <= 1 || public_exponent >= modulus) {
-        printf("Invalid public exponent 'E'. It must satisfy 1 < E < PQ.\n");
-        return -1;
-    }
-
-    // Check that plaintext is < PQ
-    if (plaintext >= modulus) {
-        printf("Invalid plaintext value. It must satisfy plaintext < PQ.\n");
-        return -1;
-    }
-
-    // Calculate the private exponent d using the formula D = (X(P-1)(Q-1) + 1) / E
-    unsigned long long int X = 1;
-    while ((X * (prime_num_1 - 1) * (prime_num_2 - 1) + 1) % public_exponent != 0) {
-        X++;
-    }
-
-    private_exponent = ((X * phi) + 1) / public_exponent;
-
     // Public Key: (E, PQ)
     // Private Key: (D, PQ)
-
-    // Compute R = (2^m) % N
-    unsigned long long int R = 1;
-    int i;
-    for (i = 0; i < m; i++) {
-        R = (R << 1) % modulus;
-    }
-
-    // Compute Y = (R^2) % N
-    unsigned long long int Y = (R * R) % modulus;
     
     //clock_t start = clock();
 
@@ -175,44 +141,38 @@ int test_side_channel(unsigned long long int plaintext, unsigned long long int p
     start = clock();
     unsigned long long int decrypted = montgomery_modular_exponentiation(ciphertext, private_exponent, modulus, m).real;
     end = clock();
-    double once_around = (double)(end - start) / CLOCKS_PER_SEC;
 
     double average_decrypt_time = find_baseline_decryption_time(ciphertext, private_exponent, modulus, m);
 
     printf("********** RSA Decryption **********\n");
     // check decrytion worked
     assert(decrypted == plaintext);
-    printf("Decrypted: %llu time: %.10f\n", decrypted, once_around);
+
+    printf("Decrypted: %llu", decrypted);
     printf("Average time to decrypt: %.10f\n", average_decrypt_time);
     printf("D:%lld\n", private_exponent);
 
-    D_invalid = private_exponent;
+    invalid_private_exponant = private_exponent;
     acceptance_threshold =  average_decrypt_time * acceptance_threshold_percent;
 
     printf("Acceptance threshold: %.10f \n", acceptance_threshold);
 
     // To test affectiveness, we perform a simplified mock attack?
     printf("Performing test...................\n");
-    while(D_invalid > 0)
+    while(invalid_private_exponant > 0)
     {
-        D_invalid = D_invalid >> 1; //need way to make sure this is always different. there is probably a better way to do this
+        invalid_private_exponant = invalid_private_exponant >> 1; //need way to make sure this is always different. there is probably a better way to do this
 
         start = clock();
 
-        decrypted = montgomery_modular_exponentiation(ciphertext, D_invalid, modulus, m).real;
+        decrypted = montgomery_modular_exponentiation(ciphertext, invalid_private_exponant, modulus, m).real;
         end = clock();
 
         double total_time_decrypt_semi_invalid_key = (double)(end - start) / CLOCKS_PER_SEC;
 
-        // printf("start: %ld end: %ld \n", start, end);
-
         double difference = total_time_decrypt_semi_invalid_key - average_decrypt_time;
 
-        // printf("loop D:%lld  \n", D_invalid);
-        // printf("Time to execute decrypt: %.10f\n", total_time_decrypt_semi_invalid_key);
-        // printf("difference: %f\n", difference);
-
-        // apply abs value if necessary TODO: make mask to optimize process? 
+        // apply abs value if necessary 
         if(difference < 0){
             difference = difference*-1;
         }
@@ -220,11 +180,10 @@ int test_side_channel(unsigned long long int plaintext, unsigned long long int p
         if(difference > acceptance_threshold)
         {
             printf("********** RSA Decryption Difference detected **********\n");
-            printf("Decrypted: %llu, invalid key:%llu\n", decrypted, D_invalid);
+            printf("Decrypted: %llu, invalid key:%llu\n", decrypted, invalid_private_exponant);
             printf("valid key: %llu\n", private_exponent);
             printf("Time to execute failed decrypt: %.10f\n", total_time_decrypt_semi_invalid_key);
             // printf("Goal time: %.10f\n", average_decrypt_time);
-            // TODO: add assert?
             return 1;
         }
     }
@@ -241,9 +200,9 @@ int test_side_channel(unsigned long long int plaintext, unsigned long long int p
  *  - private_exponent: second part of private key, used to decrypt message
  *  - montgomery_factor: TODO: check needed.
 */
-int test_encrypt_decrypt(unsigned long long int plaintext, unsigned long long int modulus, unsigned long long int public_exponent, unsigned long long int private_exponent) {
-    unsigned long long int m = 64; // 64 bit expected -> TODO: is this always hardcoded?
+int test_encrypt_decrypt(unsigned long long int plaintext, unsigned long long int modulus, unsigned long long int public_exponent, unsigned long long int private_exponent, unsigned long long int m) {
 
+    printf("********** test encrpyt/decrypt **********\n");
     // Perform RSA encryption
     unsigned long long int ciphertext = montgomery_modular_exponentiation(plaintext, public_exponent, modulus, m).real;
     
