@@ -1,22 +1,24 @@
 # SENG440_Side_Channel_Attacks
 
-## HOW TO CLONE IN SSH SERVER 
+## CODE ORGANIZATION 
+copy from report when done
+
+## ARM PROCESSOR
+The processor used for this project is the real 32-bit ARM processor that is access remotely through telnet arm with the ssh @seng440.ece.uvic.ca. 
+The methods for assembling and compiling with this processor are described below. The ARM processor has a RISC (Reduce Instruction Set Architecture) and it supports SIMD (NEON) intrinsics for vectorizations but this capability was not required for our project. 
+
+## HOW TO CLONE REPO IN SSH SERVER 
 1. Generate SSH key pair: On your SSH server, use the `ssh-keygen` command to generate the keys. This will create a public key (id_rsa.pub) and a private key (id_rsa) in the ~/.ssh/ directory.
 2. Log in to your GitHub account and go to "Settings". Under "SSH and GPG keys", click on "New SSH key" or "Add SSH key". Provide a descriptive title for the key and paste the contents of your SSH public key (id_rsa.pub) into the designated field. Save the key
 3. Test ssh connection in ssh server with: `ssh -T git@github.com`
 4. Clone with: `git@github.com:michellejwatson/SENG440_Side_Channel_Attacks.git` 
 
-## HOW TO USE WITH SSH
+## STEPS TO ASSEMBLE AND COMPILE WITH SSH
 1. Open terminal, run `ssh <netlinkid>@ugls.ece.uvic.ca`
 2. Go to the SENG_440_Side_Channel_Attacks repository (wherever you cloned it to)
-2. Run `make neon`: this will compile and create executable with neon (and generates .s assembly code)
-OR Run `make exe`: this will compile and create execution without neon
+2. Run `make exe`: this will assemble files and create an executable without neon or any optimization flags 
 3. Open another terminal, run `ssh <netlinkid>@seng440.ece.uvic.ca`
-4. Go to location where you ran `make neon` or `make exe`
-### Steps with neon:
-5. Run `chmod +x RSA_Routine_Neon.exe`
-6. Run `qemu-arm RSA_Routine_Neon.exe`
-### Steps without neon:<br>
+4. Go to location where you ran  `make exe`
 5. Run `lftp user1@arm`, sign in with password: `q6coHjd7P` and go to rsa folder using `cd rsa` or `mkdir rsa` if it doesn't exist
 6. Run `put RSA_Routine.exe`
 7. Run `chmod +x RSA_Routine.exe`
@@ -25,12 +27,4 @@ OR Run `make exe`: this will compile and create execution without neon
 10. Go to our rsa folder again using `cd rsa`
 11. Run `./RSA_Routine.exe`
 
-## RSA_Routine.c 
-This file implements the montgomery modular multiplication algorithm pseudocode in c code. 
-Currently, the values of X, Y, M, and m are hardcoded. 
-The value m can be changed to reflect the number of bits.
-m is set to 32 bits but to check with the example in the slides change the value of m to 5.
 
-#### HOW TO RUN LOCALLY
-Compile: ``gcc RSA_functions.c tests.c main.c -o RSA_Routine``
-Run: ``./RSA_Routine``
