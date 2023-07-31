@@ -39,14 +39,14 @@ montgomery_add:
 	ldmia	r3, {r2-r3}
 	str	r2, [fp, #-36]
 	str	r3, [fp, #-32]
-	ldr	r3, [fp, #16]
+	ldr	r3, [fp, #16]			
 	ldr	r4, [fp, #-32]
 	cmp	r3, r4
-	bhi	TWO_MORE_COMPARE
+	bhi	TWO_MORE_COMPARE_L2					@ start of hand coded section
 	ldr	r3, [fp, #12]
 	ldr	r4, [fp, #-36]
 	cmp	r3, r4
-	bhi	ONE_MORE_COMPARE
+	bhi	ONE_MORE_COMPARE_L2
 	ldr	r3, [fp, #16]
 	ldr	r2, [fp, #-32]
 	cmp	r3, r2
@@ -69,11 +69,11 @@ ONE_MORE_COMPARE_L6:
 	str	r3, [fp, #-20]
 	str	r4, [fp, #-16]
 	b	.L4
-TWO_MORE_COMPARE:
+TWO_MORE_COMPARE_L2:
 	ldr	r5, [fp, #12]
 	ldr	r6, [fp, #-36]
 	cmp	r5, r6
-ONE_MORE_COMPARE:
+ONE_MORE_COMPARE_L2:
 	ldr	r5, [fp, #12]
 	ldr	r6, [fp, #-36]
 	cmp	r5, r6
@@ -197,8 +197,8 @@ montgomery_multiplication:
 	ldmia	r3, {r2-r3}
 	str	r2, [fp, #-100]
 	str	r3, [fp, #-96]
-	ldr	r3, [fp, #16]
-	ldr	r4, [fp, #-96]
+	ldr	r3, [fp, #16]					@ Here is where it starts. my plan was to add extra ldr,compares by hand. see addition.
+	ldr	r4, [fp, #-96]					@ this section either goes to .L11 or .L16
 	cmp	r3, r4
 	bhi	.L11
 	ldr	r3, [fp, #16]
@@ -211,7 +211,7 @@ montgomery_multiplication:
 	bhi	.L11
 	ldr	r3, [fp, #12]
 	ldr	r2, [fp, #-100]
-	cmp	r3, r2
+	cmp	r3, r2							@ end of problem area
 .L16:
 	sub	r2, fp, #68
 	ldmia	r2, {r1-r2}
