@@ -11,16 +11,14 @@
 // Helper function to perform modular addition
 // to help with overflow
 struct returnValue montgomery_add(unsigned long long int a, unsigned long long int b, unsigned long long int modulus) {
-    unsigned long long int sum_value;
     struct returnValue sum;
-    sum_value = a + b;
+    sum.real = a + b;
+    sum.dummy = sum.real;
 
-    if (sum_value >= modulus){
-        sum.real = sum_value - modulus;
-        sum.dummy = sum_value;
+    if (sum.real >= modulus){
+        sum.real -= modulus;
     } else {
-        sum.real = sum_value
-        sum.dummy = sum_value - modulus;
+        sum.dummy -= modulus;
     }
     return sum;
 }
