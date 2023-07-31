@@ -2,7 +2,13 @@
 This project aims to remove the ability to perform side-channel attacks on a Rivest, Shamir, and Adleman (RSA) cryptography algorithm in embedded systems by regularizing the execution time and power consumption. The implementation of the RSA algorithm in C uses modular exponentiation and Montgomery modular multiplication. To defend against these attacks, hiding and masking techniques are used.
 
 ## CODE ORGANIZATION 
-copy from report when done
+- Main.c: performs checks on the inputs (P, Q, and E), computes the private key D, and calls the encryption decryption function
+- RSA_functions.c: contains all functions required to perform the RSA encryption and decryption. These functions include: montgomery_add, montgomery_multiplication, montgomery_modular_reduction, montgomery_modular_exponentiation, delay_milliseconds, and RSA_encryption_decryption
+- RSA_functions.h: Function definitions for the functions in RSA_functions.c
+- RSA_functions.s: Final assembly code version of RSA_functions.c which includes the hiding and masking through c code and manual hiding 
+- Test files: tests.c / tests.h. The test functions contained in tests.c performs a variety of tests on the different components of the algorithm and was used for validation throughout the development process.
+- unbalance_functions.c: an archive of initial implementation of RSA_functions.c pre-optimizations 
+- Exponentiation_optimizations: folder with c code and assembly code for each version of the implementation of hiding to the montgomery_modular_exponentiation function 
 
 ## ARM PROCESSOR
 The processor used for this project is the real 32-bit ARM processor that is access remotely through telnet arm with the ssh @seng440.ece.uvic.ca. 
