@@ -144,7 +144,7 @@ int test_side_channel(unsigned long long int plaintext, unsigned long long int m
 
     double average_decrypt_time = find_baseline_decryption_time(ciphertext, private_exponent, modulus, m);
 
-    printf("********** RSA Decryption **********\n");
+    printf("********** RSA Side channel check **********\n");
     // check decrytion worked
     assert(decrypted == plaintext);
 
