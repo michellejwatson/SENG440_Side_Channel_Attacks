@@ -16,7 +16,7 @@ struct returnValue montgomery_add(unsigned long long int a, unsigned long long i
     sum.dummy = sum.real;
 
     if (sum.real >= modulus){
-        sum.real -= modulus;
+ 	sum.real -= modulus;
     } else {
         sum.dummy -= modulus;
     }

@@ -39,69 +39,44 @@ montgomery_add:
 	ldmia	r3, {r2-r3}
 	str	r2, [fp, #-36]
 	str	r3, [fp, #-32]
-	ldr	r3, [fp, #16]
+	ldr	r3, [fp, #16]			
 	ldr	r4, [fp, #-32]
 	cmp	r3, r4
-	bhi	.L2_init
-	ldr	r3, [fp, #16]
-	ldr	r2, [fp, #-32]
-	cmp	r3, r2
-	bne	.L6_init
+	bhi	TWO_MORE_COMPARE_L2					@ start of hand coded section
 	ldr	r3, [fp, #12]
 	ldr	r4, [fp, #-36]
 	cmp	r3, r4
-	bhi	.L2
+	bhi	ONE_MORE_COMPARE_L2
+	ldr	r3, [fp, #16]
+	ldr	r2, [fp, #-32]
+	cmp	r3, r2
+	bne	ONE_MORE_COMPARE_L6
 	ldr	r3, [fp, #12]
 	ldr	r2, [fp, #-36]
 	cmp	r3, r2
+	b .L6
+ONE_MORE_COMPARE_L6:
+	ldr	r5, [fp, #12]
+	ldr	r6, [fp, #-36]
+	cmp	r5, r6
 .L6:
-        sub     r4, fp, #20
-        ldmia   r4, {r3-r4}
-        add     r2, fp, #12
-        ldmia   r2, {r1-r2}
-        subs    r3, r3, r1
-        sbc     r4, r4, r2
-        str     r3, [fp, #-20]
-        str     r4, [fp, #-16]
-        b       .L4
-.L6_init:
-	sub     r4, fp, #20
-        ldmia   r4, {r3-r4}
-        add     r2, fp, #12
-        ldmia   r2, {r1-r2}
-        subs    r3, r3, r1
-        sbc     r4, r4, r2
-        str     r3, [fp, #-20]
-        str     r4, [fp, #-16]
-	ldr     r3, [fp, #12]
-        ldr     r4, [fp, #-36]
-        cmp     r3, r4
-        add     r4, r4, #0
-        ldr     r3, [fp, #12]
-        ldr     r2, [fp, #-36]
-        cmp     r3, r2
-        b       .L4
-.L2_init:
-	sub     r4, fp, #12
-        ldmia   r4, {r3-r4}
-        add     r2, fp, #12
-        ldmia   r2, {r1-r2}
-        subs    r3, r3, r1
-        sbc     r4, r4, r2
-        str     r3, [fp, #-12]
-        str     r4, [fp, #-8]
-	ldr     r3, [fp, #16]
-        ldr     r2, [fp, #-32]
-        cmp     r3, r2
-        add     r4, r4, #0
-        ldr     r3, [fp, #12]
-        ldr     r4, [fp, #-36]
-        cmp     r3, r4
-        add     r4, r4, #0
-        ldr     r3, [fp, #12]
-        ldr     r2, [fp, #-36]
-        cmp     r3, r2
+	sub	r4, fp, #20
+	ldmia	r4, {r3-r4}
+	add	r2, fp, #12
+	ldmia	r2, {r1-r2}
+	subs	r3, r3, r1
+	sbc	r4, r4, r2
+	str	r3, [fp, #-20]
+	str	r4, [fp, #-16]
 	b	.L4
+TWO_MORE_COMPARE_L2:
+	ldr	r5, [fp, #12]
+	ldr	r6, [fp, #-36]
+	cmp	r5, r6
+ONE_MORE_COMPARE_L2:
+	ldr	r5, [fp, #12]
+	ldr	r6, [fp, #-36]
+	cmp	r5, r6
 .L2:
 	sub	r4, fp, #12
 	ldmia	r4, {r3-r4}
@@ -111,10 +86,6 @@ montgomery_add:
 	sbc	r4, r4, r2
 	str	r3, [fp, #-12]
 	str	r4, [fp, #-8]
-	ldr     r3, [fp, #12]
-        ldr     r2, [fp, #-36]
-        cmp     r3, r2
-	b	.L4
 .L4:
 	ldr	ip, [fp, #-40]
 	sub	r3, fp, #20
@@ -226,8 +197,8 @@ montgomery_multiplication:
 	ldmia	r3, {r2-r3}
 	str	r2, [fp, #-100]
 	str	r3, [fp, #-96]
-	ldr	r3, [fp, #16]
-	ldr	r4, [fp, #-96]
+	ldr	r3, [fp, #16]					@ Here is where it starts. my plan was to add extra ldr,compares by hand. see addition.
+	ldr	r4, [fp, #-96]					@ this section either goes to .L11 or .L16
 	cmp	r3, r4
 	bhi	.L11
 	ldr	r3, [fp, #16]
@@ -240,7 +211,7 @@ montgomery_multiplication:
 	bhi	.L11
 	ldr	r3, [fp, #12]
 	ldr	r2, [fp, #-100]
-	cmp	r3, r2
+	cmp	r3, r2							@ end of problem area
 .L16:
 	sub	r2, fp, #68
 	ldmia	r2, {r1-r2}
