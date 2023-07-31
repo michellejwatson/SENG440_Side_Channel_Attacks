@@ -54,7 +54,6 @@ montgomery_add:
 	ldr	r3, [fp, #12]
 	ldr	r2, [fp, #-36]
 	cmp	r3, r2
-	b	.L6
 .L6:
         sub     r4, fp, #20
         ldmia   r4, {r3-r4}
